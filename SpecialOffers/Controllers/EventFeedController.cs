@@ -4,7 +4,7 @@ using SpecialOffers.Domain;
 
 namespace SpecialOffers.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class EventFeedController : ControllerBase
     {

@@ -1,5 +1,6 @@
 using LoyaltyProgram.Data;
 using LoyaltyProgram.Service;
+using LoyaltyProgram.Utils;
 using Quartz;
 using Quartz.AspNetCore;
 
@@ -15,6 +16,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IEventStore, EventStore>();
 builder.Services.AddTransient<ILoyaltyProgramUserStore, LoyaltyProgramUserStore>();
 builder.Services.AddHttpClient<ISpecialOffersClient, SpecialOffersClient>();
+
+var clientSettingsSection = builder.Configuration.GetSection(nameof(ClientSettings));
+builder.Services.Configure<ClientSettings>(clientSettingsSection);
 
 builder.Services.AddQuartzServer(options =>
 {
@@ -42,6 +46,7 @@ builder.Services.AddQuartz(q =>
 var app = builder.Build();
 
 // 2- Configure services
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

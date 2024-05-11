@@ -1,4 +1,13 @@
-﻿namespace LoyaltyProgram.Domain
+﻿using System.Text.Json.Serialization;
+
+namespace LoyaltyProgram.Domain
 {
-    public record Event(long SequenceNumber, DateTimeOffset OccuredAt, string Name, object Content);
+
+    public record Event(
+        [property: JsonPropertyName("sequenceNumber")] long SequenceNumber,
+        [property: JsonPropertyName("occuredAt")] DateTimeOffset OccuredAt,
+        [property: JsonPropertyName("name")] string Name,
+        [property: JsonPropertyName("content")] object Content);
+
+
 }

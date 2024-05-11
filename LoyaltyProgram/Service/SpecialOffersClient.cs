@@ -3,6 +3,8 @@ using Quartz;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using LoyaltyProgram.Domain;
+using Microsoft.Extensions.Options;
+using LoyaltyProgram.Utils;
 
 namespace LoyaltyProgram.Service
 {
@@ -12,11 +14,13 @@ namespace LoyaltyProgram.Service
         private readonly IEventStore _store;
         private readonly ILogger<SpecialOffersClient> _logger;
         private readonly HttpClient _httpClient;
-        public SpecialOffersClient(IEventStore store, ILogger<SpecialOffersClient> logger, HttpClient httpClient)
+        private readonly ClientSettings _clientSettings;
+        public SpecialOffersClient(IEventStore store, ILogger<SpecialOffersClient> logger, HttpClient httpClient, IOptions<ClientSettings> options)
         {
             _store = store;
             _httpClient = httpClient;
             _logger = logger;
+            _clientSettings = options.Value;
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -25,7 +29,7 @@ namespace LoyaltyProgram.Service
             _logger.LogInformation("Fetching latest events");
             var start = _store.GetStartIdFromDatastore();
             var end = 5;
-            var resp = await _httpClient.GetAsync(new Uri($"http://special-offers:5002/events?start={start}&end={end}"));
+            var resp = await _httpClient.GetAsync(new Uri($"{_clientSettings.Route}?start={start}&end={end}"));
             if (resp.IsSuccessStatusCode)
             {
                 using var stream = await resp.Content.ReadAsStreamAsync();
@@ -39,7 +43,7 @@ namespace LoyaltyProgram.Service
             }
 
         }
-        
+
 
         public async Task ProcessEvents(Stream content)
         {
@@ -49,6 +53,7 @@ namespace LoyaltyProgram.Service
                 if (specialOffer is not null)
                 {
                     _store.Add(specialOffer);
+                    _logger.LogInformation($"{specialOffer.Name} event added");
                 }
 
             }
