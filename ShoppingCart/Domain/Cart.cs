@@ -1,17 +1,22 @@
-﻿using ShoppingCart.Data;
+﻿using MongoDB.Bson;
+using ShoppingCart.Data;
 
 namespace ShoppingCart.Domain
 {
-    public class ShoppingCart
+    public class Cart
     {
-        private readonly HashSet<ShoppingCartItem> items = new();
+        public ObjectId ShoppingCartId { get; }
+        
+        public ObjectId UserId { get; }
 
-        public int UserId { get; }
-        public IEnumerable<ShoppingCartItem> Items => items;
+        private readonly HashSet<CartItem> items = new();        
 
-        public ShoppingCart(int userId) => UserId = userId;
+        public IEnumerable<CartItem> Items => items;
 
-        public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems, IEventStore eventStore)
+        public Cart(ObjectId userId) => UserId = userId;
+
+
+        public void AddItems(IEnumerable<CartItem> shoppingCartItems, IEventStore eventStore)
         {
             foreach (var item in shoppingCartItems)
                 if (items.Add(item)) eventStore.Raise("ShoppingCartItemAdded", new { UserId, item });
@@ -23,9 +28,9 @@ namespace ShoppingCart.Domain
         }
     }
 
-    public record ShoppingCartItem(int ProductCatalogueId, string ProductName, string Description, Money Price)
+    public record CartItem(int ProductCatalogueId, string ProductName, string Description, Money Price)
     {
-        public virtual bool Equals(ShoppingCartItem? obj)
+        public virtual bool Equals(CartItem? obj)
         {
             return obj != null && ProductCatalogueId.Equals(obj.ProductCatalogueId);
         }

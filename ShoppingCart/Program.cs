@@ -14,13 +14,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient<IProductCatalogClient, ProductCatalogClient>()
                         .AddTransientHttpErrorPolicy(p =>
                             p.WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt)))
+);
 
-                        );
+var dataBaseSettingsSection = builder.Configuration.GetSection(nameof(DataBaseSettings));
+builder.Services.Configure<DataBaseSettings>(dataBaseSettingsSection);
 
 builder.Services.AddTransient<IShoppingCartStore, ShoppingCartStore>();
 builder.Services.AddTransient<IEventStore, EventStore>();
 builder.Services.AddTransient<IProductCatalogClient, ProductCatalogClient>();
-
+builder.Services.AddSingleton<ApplicationContext>();
 
 var app = builder.Build();
 

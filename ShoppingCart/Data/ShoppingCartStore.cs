@@ -1,23 +1,57 @@
-﻿
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using ShoppingCart.Domain;
+
 namespace ShoppingCart.Data
 {
     public class ShoppingCartStore : IShoppingCartStore
     {
-        private readonly Dictionary<int, Domain.ShoppingCart> _database;
 
-        public ShoppingCartStore()
+        private ApplicationContext Context { get; }
+
+        private IMongoCollection<Cart> _collection;
+        protected IMongoCollection<Cart> Collection
         {
-            _database = new Dictionary<int, Domain.ShoppingCart>();
+            get { return _collection ?? (_collection = GetOrCreateEntity<Cart>($"c_{typeof(Cart).Name.ToLower()}")); }
         }
 
-        public Domain.ShoppingCart GetBy(int userId)
+        public ShoppingCartStore(ApplicationContext context)
         {
-            return _database.ContainsKey(userId) ? _database[userId] : new Domain.ShoppingCart(userId);
+            Context = context;
         }
 
-        public void Save(Domain.ShoppingCart shoppingCart)
+        public async Task<Cart> GetBy(string userId)
         {
-            _database[shoppingCart.UserId] = shoppingCart;
+            return await GetBy(ObjectId.Parse(userId));
         }
+
+        public async Task<Cart> GetBy(ObjectId userId)
+        {
+            var query = await Collection.FindAsync(x => x.UserId == userId);
+            return await query.FirstOrDefaultAsync();
+        }
+
+
+        public Task Save(Cart shoppingCart)
+        {
+            return Collection.InsertOneAsync(shoppingCart);
+        }
+
+        private IMongoCollection<TEntity> GetOrCreateEntity<TEntity>(string entity)
+        {
+            if (Context.DataBase.GetCollection<TEntity>(entity) == null)
+            {
+                return CreateEntity<TEntity>(entity);
+            }
+            return Context.DataBase.GetCollection<TEntity>(entity);
+        }
+
+        private IMongoCollection<TEntity> CreateEntity<TEntity>(string entity)
+        {
+            Context.DataBase.CreateCollection(entity);
+            return Context.DataBase.GetCollection<TEntity>(entity);
+        }
+
+
     }
 }

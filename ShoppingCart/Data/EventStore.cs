@@ -1,26 +1,53 @@
-﻿using ShoppingCart.Domain;
+﻿using MongoDB.Driver;
+using ShoppingCart.Domain;
+using System.Text.Json;
 
 namespace ShoppingCart.Data
 {
     public class EventStore : IEventStore
     {
-        private IEnumerable<Event> _database;
+        private ApplicationContext Context { get; }
 
-        public EventStore()
+        private IMongoCollection<Event> _collection;
+        protected IMongoCollection<Event> Collection
         {
-            _database = new List<Event>();
+            get { return _collection ?? (_collection = GetOrCreateEntity<Event>($"c_{typeof(Event).Name.ToLower()}")); }
         }
 
-        public IEnumerable<Event> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
+
+        public EventStore(ApplicationContext context)
         {
-            return _database.Where(x=> x.SequenceNumber >= firstEventSequenceNumber && x.SequenceNumber <= lastEventSequenceNumber);
+            Context = context;
         }
 
-        public void Raise(string eventName, object content)
+        public async Task<IEnumerable<Event>> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
         {
-            var max = _database.Max(x => x.SequenceNumber);
-            var e = new Event(max + 1, DateTime.Now, eventName, content);
-            _database = _database.Append(e);
+            var query = await Collection.FindAsync(x => x.SequenceNumber >= firstEventSequenceNumber && x.SequenceNumber <= lastEventSequenceNumber);
+            return query.ToEnumerable();
+        }
+
+        public Task Raise(string eventName, object content)
+        {
+            var jsonContent = JsonSerializer.Serialize(content);
+            var max = Collection.AsQueryable().Max(x => x.SequenceNumber);
+            var e = new Event(max + 1, DateTime.Now, eventName, jsonContent);
+            return Collection.InsertOneAsync(e);
+        }
+
+
+        private IMongoCollection<TEntity> GetOrCreateEntity<TEntity>(string entity)
+        {
+            if (Context.DataBase.GetCollection<TEntity>(entity) == null)
+            {
+                return CreateEntity<TEntity>(entity);
+            }
+            return Context.DataBase.GetCollection<TEntity>(entity);
+        }
+
+        private IMongoCollection<TEntity> CreateEntity<TEntity>(string entity)
+        {
+            Context.DataBase.CreateCollection(entity);
+            return Context.DataBase.GetCollection<TEntity>(entity);
         }
     }
 }

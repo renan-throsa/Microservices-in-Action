@@ -17,7 +17,7 @@ namespace ShoppingCart.Service
             this.client = client;
         }
 
-        public async Task<IEnumerable<ShoppingCartItem>> GetShoppingCartItems(int[] productCatalogIds)
+        public async Task<IEnumerable<CartItem>> GetShoppingCartItems(int[] productCatalogIds)
         {
             using var response = await RequestProductFromProductCatalog(productCatalogIds);
             return await ConvertToShoppingCartItems(response);
@@ -30,7 +30,7 @@ namespace ShoppingCart.Service
         }
 
 
-        private static async Task<IEnumerable<ShoppingCartItem>> ConvertToShoppingCartItems(HttpResponseMessage response)
+        private static async Task<IEnumerable<CartItem>> ConvertToShoppingCartItems(HttpResponseMessage response)
         {
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStreamAsync();
@@ -42,7 +42,7 @@ namespace ShoppingCart.Service
 
             return products
               .Select(p =>
-                new ShoppingCartItem(
+                new CartItem(
                   p.ProductId,
                   p.ProductName,
                   p.ProductDescription,

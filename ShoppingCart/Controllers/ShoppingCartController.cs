@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Data;
+using ShoppingCart.Domain;
 using ShoppingCart.Service;
 
 namespace ShoppingCart.Controllers
@@ -20,29 +21,30 @@ namespace ShoppingCart.Controllers
             this.eventStore = eventStore;
         }
 
-        [HttpGet("{userId:int}")]
-        public Domain.ShoppingCart Get(int userId)
+        [HttpGet("{userId}")]
+        [ResponseCache(Duration =7200)]
+        public async Task<ActionResult<Cart>> Get(string userId)
         {
-            return shoppingCartStore.GetBy(userId);
+            return await shoppingCartStore.GetBy(userId);
         }
 
 
-        [HttpPost("{userId:int}/items")]
-        public async Task<Domain.ShoppingCart> Post(int userId, [FromBody] int[] productIds)
+        [HttpPost("{userId}/items")]
+        public async Task<ActionResult<Cart>> Post(string userId, [FromBody] int[] productIds)
         {
-            Domain.ShoppingCart shoppingCart = shoppingCartStore.GetBy(userId);
+            var shoppingCart = await shoppingCartStore.GetBy(userId);
             var shoppingCartItems = await productCatalogClient.GetShoppingCartItems(productIds);
-            shoppingCartStore.Save(shoppingCart);
+            await shoppingCartStore.Save(shoppingCart);
             shoppingCart.AddItems(shoppingCartItems, eventStore);
             return shoppingCart;
         }
 
-        [HttpDelete("{userid:int}/items")]
-        public Domain.ShoppingCart Delete(int userId, [FromBody] int[] productIds)
+        [HttpDelete("{userid}/items")]
+        public async Task<ActionResult<Cart>> Delete(string userId, [FromBody] int[] productIds)
         {
-            var shoppingCart = this.shoppingCartStore.GetBy(userId);
-            shoppingCartStore.Save(shoppingCart);
+            var shoppingCart = await shoppingCartStore.GetBy(userId);            
             shoppingCart.RemoveItems(productIds, eventStore);
+            await shoppingCartStore.Save(shoppingCart);
             return shoppingCart;
         }
 

@@ -1,8 +1,10 @@
-﻿namespace ShoppingCart.Data
+﻿using ShoppingCart.Domain;
+
+namespace ShoppingCart.Data
 {
     public interface IShoppingCartStore
     {
-        Domain.ShoppingCart GetBy(int userId);
-        void Save(Domain.ShoppingCart shoppingCart);
+        Task<Cart> GetBy(string userId);
+        Task Save(Cart shoppingCart);
     }
 }
