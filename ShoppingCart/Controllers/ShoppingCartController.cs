@@ -40,7 +40,7 @@ namespace ShoppingCart.Controllers
         }
 
         [HttpDelete("{userid}/items")]
-        public async Task<ActionResult<Cart>> Delete(string userId, [FromBody] int[] productIds)
+        public async Task<ActionResult<Cart>> Delete(string userId, [FromBody] string[] productIds)
         {
             var shoppingCart = await shoppingCartStore.GetBy(userId);            
             shoppingCart.RemoveItems(productIds, eventStore);

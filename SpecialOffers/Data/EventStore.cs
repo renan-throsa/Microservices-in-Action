@@ -1,14 +1,15 @@
 ﻿using SpecialOffers.Domain;
-using System.Text.Json;
 
 namespace SpecialOffers.Data
 {
     public class EventStore : IEventStore
     {
+        private readonly ILogger<EventStore> _logger;
         private IEnumerable<Event> _database;
 
-        public EventStore()
+        public EventStore(ILogger<EventStore> logger)
         {
+            _logger = logger;
             _database = new List<Event>
 {
     new Event(1, DateTimeOffset.Parse("2020-06-16T20:13:53.6678934+00:00"), "SpecialOfferCreated", new { description = "Best deal ever!!!", id = 0 }),
@@ -21,7 +22,8 @@ namespace SpecialOffers.Data
         }
 
         public IEnumerable<Event> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
-        {            
+        {
+            _logger.LogInformation($"Sending events from {firstEventSequenceNumber} to {lastEventSequenceNumber}");
             return _database.Where(x => x.SequenceNumber >= firstEventSequenceNumber && x.SequenceNumber <= lastEventSequenceNumber);
         }
 

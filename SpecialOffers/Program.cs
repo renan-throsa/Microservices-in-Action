@@ -1,4 +1,5 @@
 using SpecialOffers.Data;
+using SpecialOffers.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 

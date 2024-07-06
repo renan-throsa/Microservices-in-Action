@@ -1,10 +1,7 @@
 ﻿using LoyaltyProgram.Data;
 using Quartz;
-using System.Net.Http.Headers;
 using System.Text.Json;
 using LoyaltyProgram.Domain;
-using Microsoft.Extensions.Options;
-using LoyaltyProgram.Utils;
 
 namespace LoyaltyProgram.Service
 {
@@ -13,15 +10,12 @@ namespace LoyaltyProgram.Service
     {
         private readonly IEventStore _store;
         private readonly ILogger<SpecialOffersClient> _logger;
-        private readonly HttpClient _httpClient;
-        private readonly ClientSettings _clientSettings;
-        public SpecialOffersClient(IEventStore store, ILogger<SpecialOffersClient> logger, HttpClient httpClient, IOptions<ClientSettings> options)
+        private readonly IHttpClientFactory _factory;
+        public SpecialOffersClient(IEventStore store, ILogger<SpecialOffersClient> logger, IHttpClientFactory factory)
         {
             _store = store;
-            _httpClient = httpClient;
-            _logger = logger;
-            _clientSettings = options.Value;
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _factory = factory;
+            _logger = logger;       
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -29,11 +23,13 @@ namespace LoyaltyProgram.Service
             _logger.LogInformation("Fetching latest events");
             var start = _store.GetStartIdFromDatastore();
             var end = 5;
-            var resp = await _httpClient.GetAsync(new Uri($"{_clientSettings.Route}?start={start}&end={end}"));
+            
+            var resp = await _factory.CreateClient("events").GetAsync($"?start={start}&end={end}");
+
             if (resp.IsSuccessStatusCode)
             {
-                using var stream = await resp.Content.ReadAsStreamAsync();
-                await ProcessEvents(stream);
+                var content = await resp.Content.ReadAsStringAsync();
+                ProcessEvents(content);
                 _logger.LogInformation("Latest events updated");
             }
             else
@@ -44,16 +40,24 @@ namespace LoyaltyProgram.Service
 
         }
 
-
-        public async Task ProcessEvents(Stream content)
+        public void ProcessEvents(string content)
         {
-            IAsyncEnumerable<Event?> events = JsonSerializer.DeserializeAsyncEnumerable<Event?>(content);
-            await foreach (Event? specialOffer in events)
+
+            var events = JsonSerializer.Deserialize<List<Event>>(content);
+
+            if (events is null)
+            {
+                _logger.LogInformation($"No event fetched");
+                return;
+            }
+
+            foreach (Event specialOffer in events)
             {
                 if (specialOffer is not null)
                 {
                     _store.Add(specialOffer);
                     _logger.LogInformation($"{specialOffer.Name} event added");
+                    Console.WriteLine();
                 }
 
             }

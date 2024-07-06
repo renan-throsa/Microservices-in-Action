@@ -22,13 +22,13 @@ namespace ShoppingCart.Domain
                 if (items.Add(item)) eventStore.Raise("ShoppingCartItemAdded", new { UserId, item });
         }
 
-        public void RemoveItems(int[] productCatalogueIds, IEventStore eventStore)
+        public void RemoveItems(string[] productCatalogueIds, IEventStore eventStore)
         {
             items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId));
         }
     }
 
-    public record CartItem(int ProductCatalogueId, string ProductName, string Description, Money Price)
+    public record CartItem(string ProductCatalogueId, string ProductName, string Description, Money Price)
     {
         public virtual bool Equals(CartItem? obj)
         {

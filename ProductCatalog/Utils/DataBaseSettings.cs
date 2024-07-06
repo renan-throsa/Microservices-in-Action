@@ -1,4 +1,4 @@
-﻿namespace ShoppingCart.Data
+﻿namespace ProductCatalog.Utils
 {
     public sealed class DataBaseSettings
     {

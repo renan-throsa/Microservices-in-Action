@@ -2,6 +2,6 @@
 {
     public interface ISpecialOffersClient
     {
-        Task ProcessEvents(Stream content);       
+        void ProcessEvents(string content);       
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SpecialOffers.Data;
 using SpecialOffers.Domain;
 
 namespace SpecialOffers.Controllers
@@ -16,6 +15,7 @@ namespace SpecialOffers.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Event>> GetEvents([FromQuery] int start, [FromQuery] int end)
         {
+
             if (start < 0 || end < start)
                 return BadRequest();
 

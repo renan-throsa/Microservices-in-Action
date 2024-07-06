@@ -1,6 +1,4 @@
-﻿using SpecialOffers.Domain;
-
-namespace SpecialOffers.Data
+﻿namespace SpecialOffers.Domain
 {
     public interface IEventStore
     {
