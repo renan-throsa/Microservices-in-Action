@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductCatalog.Domain;
 using ProductCatalog.Services;
+using System.Text.Json;
 
 
 namespace ProductCatalog.Controllers
@@ -13,29 +14,28 @@ namespace ProductCatalog.Controllers
 
         public ProductController(IProductService service)
         {
-            this._service = service;
+            _service = service;
         }
-        
+
         [HttpGet("GetAll")]
-        public ActionResult<Response> Get()
+        public ActionResult<IEnumerable<ProductViewModel>> Get()
         {
-            return Ok(_service.All());
+            var response = _service.All();
+            return CustomResponse(response);
         }
 
         [HttpGet("GetOne/{Id}")]
-        public async Task<ActionResult<Response>> Get([FromRoute] string Id)
+        public async Task<ActionResult<IEnumerable<ProductViewModel>>> Get([FromRoute] string Id)
         {
             var response = await _service.FindSync(Id);
-            if (response.Status == ResponseStatus.Found) return Ok(response);
-            return ErrorResponse(response);
-        }        
+            return CustomResponse(response);
+        }
 
         [HttpGet("GetMany")]
-        public async Task<ActionResult<Response>> Get([FromQuery] string[] ids)
+        public async Task<ActionResult<OperationResultModel>> Get([FromQuery] string[] id)
         {
-            var response = await _service.FindSync(ids);
-            if (response.Status == ResponseStatus.Ok) return Ok(response);
-            return ErrorResponse(response);
+            var response = await _service.FindSync(id);            
+            return CustomResponse(response);
         }
 
         // POST api/<ProductController>
@@ -57,24 +57,38 @@ namespace ProductCatalog.Controllers
         {
         }
 
-        private ActionResult<Response> ErrorResponse(Response result)
+        protected ActionResult CustomResponse(OperationResultModel result)
         {
+            var jsonOptions = new JsonSerializerOptions();
+            jsonOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+
+            if (!result.IsValid)
+            {
+                return ErrorResponse(result);
+            }
+
+            return Ok(result.Content ?? string.Empty);
+        }
+
+        private ActionResult ErrorResponse(OperationResultModel result)
+        {
+            var content = result.Content;
             switch (result.Status)
             {
                 case ResponseStatus.BadRequest:
-                    return BadRequest(result);
+                    return BadRequest(content);
 
                 case ResponseStatus.NotFound:
-                    return NotFound(result);
+                    return NotFound(content);
 
                 case ResponseStatus.Unauthorized:
-                    return Unauthorized(result);
+                    return Unauthorized(content);
 
                 case ResponseStatus.Conflict:
-                    return Conflict(result);
+                    return Conflict(content);
 
                 default:
-                    return BadRequest(result);
+                    return BadRequest(content);
             }
         }
     }

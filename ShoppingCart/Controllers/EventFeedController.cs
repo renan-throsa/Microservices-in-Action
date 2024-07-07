@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShoppingCart.Data;
-using ShoppingCart.Domain;
+using ShoppingCart.Domain.Entites;
+using ShoppingCart.Domain.Interfaces;
 
 namespace ShoppingCart.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class EventFeedController : ControllerBase
     {
-        private readonly IEventStore eventStore;
+        private readonly IEventRepository eventStore;
 
-        public EventFeedController(IEventStore eventStore) =>
+        public EventFeedController(IEventRepository eventStore) =>
           this.eventStore = eventStore;
 
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<Event>> GetEvents([FromQuery] int start, [FromQuery] int end)
+        public async Task<ActionResult<IEnumerable<Event>>> GetEvents([FromQuery] int start, [FromQuery] int end)
         {
             if (start < 0 || end < start)
                 return BadRequest();
 
-            return Ok(eventStore.GetEvents(start, end));
+            return Ok(await eventStore.GetEvents(start, end));
         }
     }
 

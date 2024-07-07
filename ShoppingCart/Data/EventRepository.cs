@@ -1,21 +1,21 @@
 ﻿using MongoDB.Driver;
-using ShoppingCart.Domain;
+using ShoppingCart.Domain.Entites;
+using ShoppingCart.Domain.Interfaces;
 using System.Text.Json;
 
 namespace ShoppingCart.Data
 {
-    public class EventStore : IEventStore
+    public class EventRepository : IEventRepository
     {
         private ApplicationContext Context { get; }
 
         private IMongoCollection<Event> _collection;
         protected IMongoCollection<Event> Collection
         {
-            get { return _collection ?? (_collection = GetOrCreateEntity<Event>($"c_{typeof(Event).Name.ToLower()}")); }
+            get { return _collection ?? (_collection = GetOrCreateEntity($"c_{typeof(Event).Name.ToLower()}")); }
         }
 
-
-        public EventStore(ApplicationContext context)
+        public EventRepository(ApplicationContext context)
         {
             Context = context;
         }
@@ -26,28 +26,28 @@ namespace ShoppingCart.Data
             return query.ToEnumerable();
         }
 
-        public Task Raise(string eventName, object content)
+        public Task AddEvent(string eventName, object content)
         {
             var jsonContent = JsonSerializer.Serialize(content);
-            var max = Collection.AsQueryable().Max(x => x.SequenceNumber);
+            var max = Collection.AsQueryable().Any() ? Collection.AsQueryable().Max(x => x.SequenceNumber) : 1;
             var e = new Event(max + 1, DateTime.Now, eventName, jsonContent);
             return Collection.InsertOneAsync(e);
         }
 
 
-        private IMongoCollection<TEntity> GetOrCreateEntity<TEntity>(string entity)
+        private IMongoCollection<Event> GetOrCreateEntity(string entity)
         {
-            if (Context.DataBase.GetCollection<TEntity>(entity) == null)
+            if (Context.DataBase.GetCollection<Event>(entity) == null)
             {
-                return CreateEntity<TEntity>(entity);
+                return CreateEntity(entity);
             }
-            return Context.DataBase.GetCollection<TEntity>(entity);
+            return Context.DataBase.GetCollection<Event>(entity);
         }
 
-        private IMongoCollection<TEntity> CreateEntity<TEntity>(string entity)
+        private IMongoCollection<Event> CreateEntity(string entity)
         {
             Context.DataBase.CreateCollection(entity);
-            return Context.DataBase.GetCollection<TEntity>(entity);
+            return Context.DataBase.GetCollection<Event>(entity);
         }
     }
 }

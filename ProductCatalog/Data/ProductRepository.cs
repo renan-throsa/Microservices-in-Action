@@ -71,9 +71,9 @@ namespace ProductCatalog.Data
             return _entities.AsQueryable();
         }
 
-        public Task<Product> UpdateAsync(Product entity)
+        public async Task<Product> UpdateAsync(Product entity)
         {
-            return _entities.FindOneAndReplaceAsync(x => x.Id == entity.Id, entity);
+            return await _entities.FindOneAndReplaceAsync(x => x.Id == entity.Id, entity);
         }
 
         public Task<IEnumerable<Product>> UpdateAsync(IEnumerable<Product> entities)

@@ -1,4 +1,5 @@
-﻿using ShoppingCart.Domain;
+﻿using ShoppingCart.Domain.Entites;
+using ShoppingCart.Domain.Interfaces;
 using System.Text.Json;
 
 namespace ShoppingCart.Service
@@ -11,22 +12,22 @@ namespace ShoppingCart.Service
     public class ProductCatalogClient : IProductCatalogClient
     {
         private readonly HttpClient client;
-        private static string getProductPathTemplate = "?Ids={0}";
+        private static string getProductPathTemplate = "/Product/GetMany?Id={0}";
 
         public ProductCatalogClient(HttpClient client)
         {
             this.client = client;
         }
 
-        public async Task<IEnumerable<CartItem>> GetShoppingCartItems(int[] productCatalogIds)
+        public async Task<IEnumerable<CartItem>> GetShoppingCartItems(string[] productCatalogIds)
         {
             using var response = await RequestProductFromProductCatalog(productCatalogIds);
             return await ConvertToShoppingCartItems(response);
         }
 
-        private async Task<HttpResponseMessage> RequestProductFromProductCatalog(int[] productCatalogIds)
+        private async Task<HttpResponseMessage> RequestProductFromProductCatalog(string[] productCatalogIds)
         {
-            var productsResource = string.Format(getProductPathTemplate, string.Join("=", productCatalogIds));
+            var productsResource = string.Format(getProductPathTemplate, string.Join("&Id=", productCatalogIds));
             return await client.GetAsync(productsResource);
         }
 
@@ -45,17 +46,17 @@ namespace ShoppingCart.Service
             return products
               .Select(p =>
                 new CartItem(
-                  p.ProductId,
-                  p.ProductName,
-                  p.ProductDescription,
+                  p.Id,
+                  p.Name,
+                  p.Description,
                   p.Price
               ));
         }
 
         private record ProductCatalogProduct(
-          string ProductId,
-          string ProductName,
-          string ProductDescription,
+          string Id,
+          string Name,
+          string Description,
           Money Price);
     }
 }

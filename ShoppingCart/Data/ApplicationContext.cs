@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using ShoppingCart.Domain;
+using ShoppingCart.Domain.Entites;
 using ShoppingCart.Utils;
 
 namespace ShoppingCart.Data

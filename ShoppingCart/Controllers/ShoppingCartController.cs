@@ -1,51 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShoppingCart.Data;
-using ShoppingCart.Domain;
-using ShoppingCart.Service;
+using ShoppingCart.Domain.Interfaces;
+using ShoppingCart.Domain.Models;
 
 namespace ShoppingCart.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ShoppingCartController : ControllerBase
     {
-        private readonly IShoppingCartStore shoppingCartStore;
-        private readonly IProductCatalogClient productCatalogClient;
-        private readonly IEventStore eventStore;
+        private readonly IShoppingCartService _shoppingCartService;
 
-
-        public ShoppingCartController(IShoppingCartStore shoppingCartStore, IProductCatalogClient productCatalogClient, IEventStore eventStore)
+        public ShoppingCartController(IShoppingCartService shoppingCartService)
         {
-            this.shoppingCartStore = shoppingCartStore;
-            this.productCatalogClient = productCatalogClient;
-            this.eventStore = eventStore;
+            this._shoppingCartService = shoppingCartService;
         }
 
         [HttpGet("{userId}")]
-        [ResponseCache(Duration =7200)]
-        public async Task<ActionResult<Cart>> Get(string userId)
+        public async Task<ActionResult<ResponseModel>> Get(string userId)
         {
-            return await shoppingCartStore.GetBy(userId);
+            return await _shoppingCartService.FindSync(userId);
         }
 
 
-        [HttpPost("{userId}/items")]
-        public async Task<ActionResult<Cart>> Post(string userId, [FromBody] int[] productIds)
+        [HttpPost("items")]
+        public async Task<ActionResult<ResponseModel>> Post(CartPostModel model)
         {
-            var shoppingCart = await shoppingCartStore.GetBy(userId);
-            var shoppingCartItems = await productCatalogClient.GetShoppingCartItems(productIds);
-            await shoppingCartStore.Save(shoppingCart);
-            shoppingCart.AddItems(shoppingCartItems, eventStore);
-            return shoppingCart;
+            
+            return await _shoppingCartService.AddAsync(model);
         }
 
-        [HttpDelete("{userid}/items")]
-        public async Task<ActionResult<Cart>> Delete(string userId, [FromBody] string[] productIds)
+        [HttpDelete("items")]
+        public async Task<ActionResult<ResponseModel>> Delete(CartPostModel model)
         {
-            var shoppingCart = await shoppingCartStore.GetBy(userId);            
-            shoppingCart.RemoveItems(productIds, eventStore);
-            await shoppingCartStore.Save(shoppingCart);
-            return shoppingCart;
+            return await _shoppingCartService.DeleteAsync(model);
         }
 
     }

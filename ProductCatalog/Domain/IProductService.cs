@@ -7,10 +7,10 @@ namespace ProductCatalog.Domain
     public interface IProductService
     {
 
-        Task<Response> FindSync(ObjectId Id);
-        Task<Response> FindSync(string Id);
-        Task<Response> FindSync(string[] Ids);
-        Task<Response> FindAsync(Expression<Func<ProductViewModel, bool>> filter);
-        Response All();
+        Task<OperationResultModel> FindSync(ObjectId Id);
+        Task<OperationResultModel> FindSync(string Id);
+        Task<OperationResultModel> FindSync(string[] Ids);
+        Task<OperationResultModel> FindAsync(Expression<Func<ProductViewModel, bool>> filter);
+        OperationResultModel All();
     }
 }

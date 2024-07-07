@@ -1,10 +1,10 @@
-﻿namespace ProductCatalog.Services
+﻿namespace ProductCatalog.Domain
 {
-    public class Response
+    public class OperationResultModel
     {
         public ResponseStatus Status { get; set; }
-        public object? Payload { get; set; }
-
+        public object? Content { get; set; }
+        public bool IsValid => Status == ResponseStatus.Ok || Status == ResponseStatus.Created;
     }
 
     public enum ResponseStatus
