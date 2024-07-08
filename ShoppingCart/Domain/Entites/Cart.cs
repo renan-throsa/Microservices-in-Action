@@ -9,31 +9,22 @@ namespace ShoppingCart.Domain.Entites
 
         public ObjectId UserId { get; set; }
 
-        private readonly HashSet<CartItem> _items;
-
-        public IEnumerable<CartItem> Items => _items;
+        public HashSet<CartItem> Items { get; set; }        
 
         public Cart()
         {
-            _items = new HashSet<CartItem>();
-        }
+            Items = new HashSet<CartItem>();
+        }        
 
-        public Cart(ObjectId userId)
-        {
-            _items = new HashSet<CartItem>();
-            UserId = userId;
-        }
-
-
-        public void AddItems(IEnumerable<CartItem> shoppingCartItems, IEventRepository eventStore)
-        {
+        public async Task AddItems(IEnumerable<CartItem> shoppingCartItems, IEventRepository eventStore)
+        {            
             foreach (var item in shoppingCartItems)
-                if (_items.Add(item)) eventStore.AddEvent("ShoppingCartItemAdded", new { UserId, item });
+                if (Items.Add(item)) await eventStore.AddEvent("ShoppingCartItemAdded", new { UserId, item });
         }
 
         public void RemoveItems(string[] productCatalogueIds, IEventRepository eventStore)
         {
-            _items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId));
+            Items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId));
         }
     }
 

@@ -9,7 +9,6 @@ namespace ShoppingCart.Domain.Models
         public string Description { get; set; }
         public Money Price { get; set; }
 
-
     }
 
     

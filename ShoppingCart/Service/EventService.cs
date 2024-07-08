@@ -16,19 +16,19 @@ namespace ShoppingCart.Service
             await _eventRepository.AddEvent(eventName, content);
         }
 
-        public async Task<ResponseModel> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
+        public async Task<OperationResultModel> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
         {
             var result = await _eventRepository.GetEvents(firstEventSequenceNumber, lastEventSequenceNumber);
             return Response(ResponseStatus.Ok, result);
         }
 
-        private ResponseModel Response(ResponseStatus valide, object? result = null)
+        private OperationResultModel Response(ResponseStatus valide, object? result = null)
         {
             return
-            new ResponseModel
+            new OperationResultModel
             {
                 Status = valide,
-                Payload = result
+                Content = result
             };
         }
     }

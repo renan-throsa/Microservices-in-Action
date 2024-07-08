@@ -66,7 +66,8 @@ namespace ProductCatalog.Services
         }
 
         public async Task<OperationResultModel> FindSync(string[] Ids)
-        {            
+        {
+            Ids = Ids.Distinct().ToArray();
             _logger.LogInformation($"Searching by keys:{string.Format("[{0}]", string.Join(",", Ids))}");
             var result = new List<ProductViewModel>();
             foreach (var Id in Ids)

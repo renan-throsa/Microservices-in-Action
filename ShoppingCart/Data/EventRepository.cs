@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using ShoppingCart.Domain.Entites;
 using ShoppingCart.Domain.Interfaces;
 using System.Text.Json;
@@ -29,8 +30,8 @@ namespace ShoppingCart.Data
         public Task AddEvent(string eventName, object content)
         {
             var jsonContent = JsonSerializer.Serialize(content);
-            var max = Collection.AsQueryable().Any() ? Collection.AsQueryable().Max(x => x.SequenceNumber) : 1;
-            var e = new Event(max + 1, DateTime.Now, eventName, jsonContent);
+            var max = !Collection.AsQueryable().Any() ? 1 : Collection.AsQueryable().Max(x => x.SequenceNumber) + 1;
+            var e = new Event(ObjectId.Empty, max, DateTime.Now, eventName, jsonContent);
             return Collection.InsertOneAsync(e);
         }
 

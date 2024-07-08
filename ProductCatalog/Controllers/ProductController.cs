@@ -57,7 +57,7 @@ namespace ProductCatalog.Controllers
         {
         }
 
-        protected ActionResult CustomResponse(OperationResultModel result)
+        private ActionResult CustomResponse(OperationResultModel result)
         {
             var jsonOptions = new JsonSerializerOptions();
             jsonOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;

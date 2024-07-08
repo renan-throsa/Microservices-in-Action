@@ -4,7 +4,7 @@ namespace ShoppingCart.Domain.Interfaces
 {
     public interface IEventService
     {
-        Task<ResponseModel> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber);
+        Task<OperationResultModel> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber);
         Task AddEvent(string eventName, object content);
     }
 }

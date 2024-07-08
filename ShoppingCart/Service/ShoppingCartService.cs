@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
+using ShoppingCart.Domain.Entites;
 using ShoppingCart.Domain.Interfaces;
 using ShoppingCart.Domain.Models;
 
@@ -23,7 +24,7 @@ namespace ShoppingCart.Service
 
         }
 
-        public async Task<ResponseModel> FindSync(string userId)
+        public async Task<OperationResultModel> FindSync(string userId)
         {
             _logger.LogInformation($"Fetching {typeof(CartViewModel).FullName} whit id {userId}");
             if (ObjectId.TryParse(userId, out var _))
@@ -45,33 +46,73 @@ namespace ShoppingCart.Service
             }
         }
 
-        public async Task<ResponseModel> DeleteAsync(CartPostModel model)
+        public async Task<OperationResultModel> DeleteAsync(CartPostModel model)
         {
-            _logger.LogInformation($"Removing products {string.Format("[{0}]", string.Join(",", model.ProductIds))} from user's cart with id {model.UserId}");
-            var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
-            shoppingCart.RemoveItems(model.ProductIds, _eventStore);
-            await _shoppingCartRepository.AddSync(shoppingCart);
-            return Response(ResponseStatus.Ok, _mapper.Map<CartViewModel>(shoppingCart));
-        }
+            var userId = model.UserId;
 
-        public async Task<ResponseModel> AddAsync(CartPostModel model)
-        {
-            _logger.LogInformation($"Adding products {string.Format("[{0}]", string.Join(",", model.ProductIds))} to user's cart with id {model.UserId}");
+            if (!ObjectId.TryParse(model.UserId, out var _))
+            {
+                _logger.LogError($"Unable to parse the object: {model.UserId}");
+                return Response(ResponseStatus.BadRequest, $"Unable to parse the object: {model.UserId}");
+            }
+
+            _logger.LogInformation($"Fetching {typeof(CartViewModel).FullName} whit id {userId}");
             var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
-            var shoppingCartItems = await _productCatalogClient.GetShoppingCartItems(model.ProductIds);            
-            shoppingCart.AddItems(shoppingCartItems, _eventStore);
+
+            if (shoppingCart == null)
+            {
+                var message = $"Key:{userId} was not found.";
+                _logger.LogWarning(message);
+                return Response(ResponseStatus.NotFound, message);
+            }
+
+            _logger.LogInformation($"Removing products {string.Format("[{0}]", string.Join(",", model.ProductIds))} from user's cart with id {model.UserId}");            
+            shoppingCart.RemoveItems(model.ProductIds, _eventStore);
+
             await _shoppingCartRepository.UpdateSync(shoppingCart);
             return Response(ResponseStatus.Ok, _mapper.Map<CartViewModel>(shoppingCart));
+
+        }
+
+        public async Task<OperationResultModel> SaveAsync(CartPostModel model)
+        {
+            if (!ObjectId.TryParse(model.UserId, out var _))
+            {
+                _logger.LogError($"Unable to parse the object: {model.UserId}");
+                return Response(ResponseStatus.BadRequest, $"Unable to parse the object: {model.UserId}");
+            }
+
+            _logger.LogInformation($"Adding products {string.Format("[{0}]", string.Join(",", model.ProductIds))} to user's cart with id {model.UserId}");
+            var shoppingCartItemsTask = _productCatalogClient.GetShoppingCartItems(model.ProductIds);
+
+            var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId) ?? new Cart();
+            var shoppingCartItems = await shoppingCartItemsTask;
+            await shoppingCart.AddItems(shoppingCartItems, _eventStore);
+
+
+            if (shoppingCart.Id == ObjectId.Empty)
+            {
+                _logger.LogWarning($"Key:{model.UserId} was not found. Saving a new {typeof(Cart).FullName}");
+                shoppingCart.UserId = ObjectId.Parse(model.UserId);
+                await _shoppingCartRepository.AddSync(shoppingCart);
+            }
+            else
+            {
+                await _shoppingCartRepository.UpdateSync(shoppingCart);
+            }
+
+            var mapping = _mapper.Map<CartViewModel>(shoppingCart);
+            return Response(ResponseStatus.Ok, mapping);
         }
 
 
-        private ResponseModel Response(ResponseStatus valide, object? result = null)
+        private OperationResultModel Response(ResponseStatus valide, object? result = null)
         {
             return
-            new ResponseModel
+            new OperationResultModel
             {
                 Status = valide,
-                Payload = result
+                Content = result
             };
         }
     }

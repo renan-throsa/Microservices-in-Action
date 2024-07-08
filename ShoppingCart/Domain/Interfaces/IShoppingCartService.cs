@@ -4,8 +4,8 @@ namespace ShoppingCart.Domain.Interfaces
 {
     public interface IShoppingCartService
     {
-        Task<ResponseModel> FindSync(string userId);
-        Task<ResponseModel> AddAsync(CartPostModel model);
-        Task<ResponseModel> DeleteAsync(CartPostModel model);
+        Task<OperationResultModel> FindSync(string userId);
+        Task<OperationResultModel> SaveAsync(CartPostModel model);
+        Task<OperationResultModel> DeleteAsync(CartPostModel model);
     }
 }

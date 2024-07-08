@@ -2,14 +2,14 @@
 {
     public class CartViewModel
     {
-        public string ShoppingCartId { get; }
+        public string Id { get; set; }
 
-        public string UserId { get; }
+        public string UserId { get; set; }
 
         private readonly HashSet<CartItemViewModel> items = new();
 
         public IEnumerable<CartItemViewModel> Items => items;
 
-        
+
     }
 }
