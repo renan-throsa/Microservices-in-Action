@@ -85,19 +85,20 @@ namespace ShoppingCart.Service
             _logger.LogInformation($"Adding products {string.Format("[{0}]", string.Join(",", model.ProductIds))} to user's cart with id {model.UserId}");
             var shoppingCartItemsTask = _productCatalogClient.GetShoppingCartItems(model.ProductIds);
 
-            var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId) ?? new Cart();
-            var shoppingCartItems = await shoppingCartItemsTask;
-            await shoppingCart.AddItems(shoppingCartItems, _eventStore);
+            var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
+            var shoppingCartItems = await shoppingCartItemsTask;          
 
 
-            if (shoppingCart.Id == ObjectId.Empty)
+            if (shoppingCart is null)
             {
                 _logger.LogWarning($"Key:{model.UserId} was not found. Saving a new {typeof(Cart).FullName}");
-                shoppingCart.UserId = ObjectId.Parse(model.UserId);
+                shoppingCart = new Cart(new ObjectId(model.UserId));
+                await shoppingCart.AddItems(shoppingCartItems, _eventStore);
                 await _shoppingCartRepository.AddSync(shoppingCart);
             }
             else
             {
+                await shoppingCart.AddItems(shoppingCartItems, _eventStore);
                 await _shoppingCartRepository.UpdateSync(shoppingCart);
             }
 

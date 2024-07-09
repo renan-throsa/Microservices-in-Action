@@ -1,4 +1,5 @@
-﻿using ShoppingCart.Domain.Interfaces;
+﻿using MongoDB.Bson;
+using ShoppingCart.Domain.Interfaces;
 using ShoppingCart.Domain.Models;
 
 namespace ShoppingCart.Service
@@ -11,9 +12,9 @@ namespace ShoppingCart.Service
             _eventRepository = eventRepository;
         }
 
-        public async Task AddEvent(string eventName, object content)
+        public async Task AddEvent(string eventName, ObjectId UserId, ObjectId ProductCatalogueId)
         {
-            await _eventRepository.AddEvent(eventName, content);
+            await _eventRepository.AddEvent(eventName, UserId, ProductCatalogueId);
         }
 
         public async Task<OperationResultModel> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)

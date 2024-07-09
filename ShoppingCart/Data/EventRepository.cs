@@ -27,11 +27,10 @@ namespace ShoppingCart.Data
             return query.ToEnumerable();
         }
 
-        public Task AddEvent(string eventName, object content)
+        public Task AddEvent(string eventName, ObjectId UserId, ObjectId ProductCatalogueId)
         {
-            var jsonContent = JsonSerializer.Serialize(content);
             var max = !Collection.AsQueryable().Any() ? 1 : Collection.AsQueryable().Max(x => x.SequenceNumber) + 1;
-            var e = new Event(ObjectId.Empty, max, DateTime.Now, eventName, jsonContent);
+            var e = new Event(ObjectId.Empty, UserId, ProductCatalogueId, max, DateTime.Now, eventName);
             return Collection.InsertOneAsync(e);
         }
 

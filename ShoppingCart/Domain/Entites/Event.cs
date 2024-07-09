@@ -2,7 +2,7 @@
 
 namespace ShoppingCart.Domain.Entites
 {
-    public record Event(ObjectId Id,long SequenceNumber, DateTimeOffset OccuredAt, string Name, object Content);
+    public record Event(ObjectId Id, ObjectId UserId, ObjectId ProductCatalogueId, long SequenceNumber, DateTime OccuredAt, string Name);
 
     /*
     public class Event

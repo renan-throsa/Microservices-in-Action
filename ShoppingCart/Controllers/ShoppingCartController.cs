@@ -13,8 +13,9 @@ namespace ShoppingCart.Controllers
 
         public ShoppingCartController(IShoppingCartService shoppingCartService)
         {
-            this._shoppingCartService = shoppingCartService;
+            _shoppingCartService = shoppingCartService;
         }
+        
 
         [HttpGet("{userId}")]
         public async Task<ActionResult<CartViewModel>> Get(string userId)

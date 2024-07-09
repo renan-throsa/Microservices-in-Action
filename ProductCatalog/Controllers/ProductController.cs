@@ -17,6 +17,7 @@ namespace ProductCatalog.Controllers
             _service = service;
         }
 
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         [HttpGet("GetAll")]
         public ActionResult<IEnumerable<ProductViewModel>> Get()
         {
@@ -34,7 +35,7 @@ namespace ProductCatalog.Controllers
         [HttpGet("GetMany")]
         public async Task<ActionResult<OperationResultModel>> Get([FromQuery] string[] id)
         {
-            var response = await _service.FindSync(id);            
+            var response = await _service.FindSync(id);
             return CustomResponse(response);
         }
 
