@@ -2,7 +2,6 @@
 using MongoDB.Driver;
 using ShoppingCart.Domain.Entites;
 using ShoppingCart.Domain.Interfaces;
-using System.Text.Json;
 
 namespace ShoppingCart.Data
 {
@@ -29,8 +28,8 @@ namespace ShoppingCart.Data
 
         public Task AddEvent(string eventName, ObjectId UserId, ObjectId ProductCatalogueId)
         {
-            var max = !Collection.AsQueryable().Any() ? 1 : Collection.AsQueryable().Max(x => x.SequenceNumber) + 1;
-            var e = new Event(ObjectId.Empty, UserId, ProductCatalogueId, max, DateTime.Now, eventName);
+            var next = GetNextSequencyEventNumber();
+            var e = new Event(ObjectId.Empty, UserId, ProductCatalogueId, next, DateTime.Now, eventName);
             return Collection.InsertOneAsync(e);
         }
 
@@ -48,6 +47,12 @@ namespace ShoppingCart.Data
         {
             Context.DataBase.CreateCollection(entity);
             return Context.DataBase.GetCollection<Event>(entity);
+        }
+
+        private long GetNextSequencyEventNumber()
+        {
+            if (Collection.AsQueryable().Any()) return Collection.AsQueryable().Max(x => x.SequenceNumber) + 1;
+            return 1;
         }
     }
 }

@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using ProductCatalog.Domain;
 using System.Linq.Expressions;
+using System.Net;
 
 namespace ProductCatalog.Services
 {
@@ -21,7 +22,7 @@ namespace ProductCatalog.Services
         public OperationResultModel All()
         {
             _logger.LogInformation($"Listing {typeof(ProductViewModel).FullName}");
-            return Response(ResponseStatus.Ok, _mapper.ProjectTo<ProductViewModel>(_repository.GetQueryable()));
+            return Response(HttpStatusCode.OK, _mapper.ProjectTo<ProductViewModel>(_repository.GetQueryable()));
         }
 
         public Task<OperationResultModel> FindAsync(Expression<Func<ProductViewModel, bool>> filter)
@@ -37,10 +38,10 @@ namespace ProductCatalog.Services
             {
                 var message = $"Key:{key} not found.";
                 _logger.LogWarning(message);
-                return Response(ResponseStatus.NotFound);
+                return Response(HttpStatusCode.NotFound);
             }
 
-            return Response(ResponseStatus.Found, _mapper.Map<ProductViewModel>(entity));
+            return Response(HttpStatusCode.Found, _mapper.Map<ProductViewModel>(entity));
         }
 
         public async Task<OperationResultModel> FindSync(string Id)
@@ -53,15 +54,15 @@ namespace ProductCatalog.Services
                 {
                     var message = $"Key:{Id} was not found.";
                     _logger.LogWarning(message);
-                    return Response(ResponseStatus.NotFound, message);
+                    return Response(HttpStatusCode.NotFound, message);
                 }
 
-                return Response(ResponseStatus.Found, _mapper.Map<ProductViewModel>(entity));
+                return Response(HttpStatusCode.Found, _mapper.Map<ProductViewModel>(entity));
             }
             else
             {
                 _logger.LogError($"Unable to parse the object: {Id}");
-                return Response(ResponseStatus.BadRequest, $"Unable to parse the object: {Id}");
+                return Response(HttpStatusCode.BadRequest, $"Unable to parse the object: {Id}");
             }
         }
 
@@ -88,16 +89,16 @@ namespace ProductCatalog.Services
                 }
             }
 
-            return Response(ResponseStatus.Ok, result);
+            return Response(HttpStatusCode.OK, result);
 
         }
 
-        private OperationResultModel Response(ResponseStatus valide, object? result = null)
+        private OperationResultModel Response(HttpStatusCode status, object? result = null)
         {
             return
             new OperationResultModel
             {
-                Status = valide,
+                Status = status,
                 Content = result
             };
         }

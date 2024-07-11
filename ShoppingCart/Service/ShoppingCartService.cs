@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using ShoppingCart.Domain.Entites;
 using ShoppingCart.Domain.Interfaces;
 using ShoppingCart.Domain.Models;
+using System.Net;
 
 namespace ShoppingCart.Service
 {
@@ -34,15 +35,15 @@ namespace ShoppingCart.Service
                 {
                     var message = $"Key:{userId} was not found.";
                     _logger.LogWarning(message);
-                    return Response(ResponseStatus.NotFound, message);
+                    return Response(HttpStatusCode.NotFound, message);
                 }
 
-                return Response(ResponseStatus.Found, _mapper.Map<CartViewModel>(entity));
+                return Response(HttpStatusCode.Found, _mapper.Map<CartViewModel>(entity));
             }
             else
             {
                 _logger.LogError($"Unable to parse the object: {userId}");
-                return Response(ResponseStatus.BadRequest, $"Unable to parse the object: {userId}");
+                return Response(HttpStatusCode.BadRequest, $"Unable to parse the object: {userId}");
             }
         }
 
@@ -53,7 +54,7 @@ namespace ShoppingCart.Service
             if (!ObjectId.TryParse(model.UserId, out var _))
             {
                 _logger.LogError($"Unable to parse the object: {model.UserId}");
-                return Response(ResponseStatus.BadRequest, $"Unable to parse the object: {model.UserId}");
+                return Response(HttpStatusCode.BadRequest, $"Unable to parse the object: {model.UserId}");
             }
 
             _logger.LogInformation($"Fetching {typeof(CartViewModel).FullName} whit id {userId}");
@@ -63,14 +64,14 @@ namespace ShoppingCart.Service
             {
                 var message = $"Key:{userId} was not found.";
                 _logger.LogWarning(message);
-                return Response(ResponseStatus.NotFound, message);
+                return Response(HttpStatusCode.NotFound, message);
             }
 
             _logger.LogInformation($"Removing products {string.Format("[{0}]", string.Join(",", model.ProductIds))} from user's cart with id {model.UserId}");            
             shoppingCart.RemoveItems(model.ProductIds, _eventStore);
 
             await _shoppingCartRepository.UpdateSync(shoppingCart);
-            return Response(ResponseStatus.Ok, _mapper.Map<CartViewModel>(shoppingCart));
+            return Response(HttpStatusCode.OK, _mapper.Map<CartViewModel>(shoppingCart));
 
         }
 
@@ -79,14 +80,25 @@ namespace ShoppingCart.Service
             if (!ObjectId.TryParse(model.UserId, out var _))
             {
                 _logger.LogError($"Unable to parse the object: {model.UserId}");
-                return Response(ResponseStatus.BadRequest, $"Unable to parse the object: {model.UserId}");
+                return Response(HttpStatusCode.BadRequest, $"Unable to parse the object: {model.UserId}");
             }
 
             _logger.LogInformation($"Adding products {string.Format("[{0}]", string.Join(",", model.ProductIds))} to user's cart with id {model.UserId}");
             var shoppingCartItemsTask = _productCatalogClient.GetShoppingCartItems(model.ProductIds);
 
             var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
-            var shoppingCartItems = await shoppingCartItemsTask;          
+
+            IEnumerable<CartItem> shoppingCartItems;
+
+            try
+            {
+                shoppingCartItems = await shoppingCartItemsTask;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return Response(HttpStatusCode.InternalServerError, ex.Message);
+            }                     
 
 
             if (shoppingCart is null)
@@ -103,11 +115,11 @@ namespace ShoppingCart.Service
             }
 
             var mapping = _mapper.Map<CartViewModel>(shoppingCart);
-            return Response(ResponseStatus.Ok, mapping);
+            return Response(HttpStatusCode.OK, mapping);
         }
 
 
-        private OperationResultModel Response(ResponseStatus valide, object? result = null)
+        private OperationResultModel Response(HttpStatusCode valide, object? result = null)
         {
             return
             new OperationResultModel

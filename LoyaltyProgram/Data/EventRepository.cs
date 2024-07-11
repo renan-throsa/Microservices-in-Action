@@ -1,14 +1,13 @@
-﻿
-
-using LoyaltyProgram.Domain;
+﻿using LoyaltyProgram.Domain.Entities;
+using LoyaltyProgram.Domain.Interfaces;
 
 namespace LoyaltyProgram.Data
 {
-    public class EventStore : IEventStore
+    public class EventRepository : IEventRepository
     {
         private IEnumerable<Event> _database;
 
-        public EventStore()
+        public EventRepository()
         {
             _database = new List<Event>();
         }
@@ -21,14 +20,14 @@ namespace LoyaltyProgram.Data
 
         public void Raise(string eventName, object content)
         {
-            var next = GetStartIdFromDatastore() + 1;
+            var next = GetNextSequencyEventNumber();
             var e = new Event(next, DateTime.Now, eventName, content);
             _database = _database.Append(e);
         }
 
-        public long GetStartIdFromDatastore()
+        public long GetNextSequencyEventNumber()
         {
-            if (_database.Any()) return _database.Max(x => x.SequenceNumber);
+            if (_database.Any()) return _database.Max(x => x.SequenceNumber) + 1;
             return 1;
         }
 

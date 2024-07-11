@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductCatalog.Domain;
 using ProductCatalog.Services;
+using System.Net;
 using System.Text.Json;
 
 
@@ -76,16 +77,16 @@ namespace ProductCatalog.Controllers
             var content = result.Content;
             switch (result.Status)
             {
-                case ResponseStatus.BadRequest:
+                case HttpStatusCode.BadRequest:
                     return BadRequest(content);
 
-                case ResponseStatus.NotFound:
+                case HttpStatusCode.NotFound:
                     return NotFound(content);
 
-                case ResponseStatus.Unauthorized:
+                case HttpStatusCode.Unauthorized:
                     return Unauthorized(content);
 
-                case ResponseStatus.Conflict:
+                case HttpStatusCode.Conflict:
                     return Conflict(content);
 
                 default:

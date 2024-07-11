@@ -17,7 +17,7 @@ namespace ProductCatalog
             builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
             var app = builder.Build();
-            app.AddDBData();
+            app.AddDataToDB();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

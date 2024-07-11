@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Domain.Interfaces;
 using ShoppingCart.Domain.Models;
-using System.Text.Json;
+using System.Net;
 
 namespace ShoppingCart.Controllers
 {
@@ -40,9 +40,7 @@ namespace ShoppingCart.Controllers
         }
 
         private ActionResult CustomResponse(OperationResultModel result)
-        {
-            var jsonOptions = new JsonSerializerOptions();
-            jsonOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+        {            
 
             if (!result.IsValid)
             {
@@ -57,20 +55,20 @@ namespace ShoppingCart.Controllers
             var content = result.Content;
             switch (result.Status)
             {
-                case ResponseStatus.BadRequest:
+                case HttpStatusCode.BadRequest:
                     return BadRequest(content);
 
-                case ResponseStatus.NotFound:
+                case HttpStatusCode.NotFound:
                     return NotFound(content);
 
-                case ResponseStatus.Unauthorized:
+                case HttpStatusCode.Unauthorized:
                     return Unauthorized(content);
 
-                case ResponseStatus.Conflict:
-                    return Conflict(content);
+                case HttpStatusCode.Conflict:
+                    return Conflict(content);    
 
                 default:
-                    return BadRequest(content);
+                    return Problem(statusCode: ((int)result.Status), detail: (string)content);
             }
         }
 

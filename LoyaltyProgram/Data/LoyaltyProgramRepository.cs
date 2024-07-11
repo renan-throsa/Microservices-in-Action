@@ -1,12 +1,13 @@
-﻿using LoyaltyProgram.Domain;
+﻿using LoyaltyProgram.Domain.Entities;
+using LoyaltyProgram.Domain.Interfaces;
 
 namespace LoyaltyProgram.Data
 {
-    public class LoyaltyProgramUserStore : ILoyaltyProgramUserStore
+    public class LoyaltyProgramRepository : ILoyaltyProgramRepository
     {
         private readonly Dictionary<int, LoyaltyProgramUser> _database;
 
-        public LoyaltyProgramUserStore()
+        public LoyaltyProgramRepository()
         {
             _database = new Dictionary<int, LoyaltyProgramUser>();
         }

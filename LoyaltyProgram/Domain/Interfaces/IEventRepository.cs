@@ -1,12 +1,12 @@
-﻿using LoyaltyProgram.Domain;
+﻿using LoyaltyProgram.Domain.Entities;
 
-namespace LoyaltyProgram.Data
+namespace LoyaltyProgram.Domain.Interfaces
 {
-    public interface IEventStore
+    public interface IEventRepository
     {
         IEnumerable<Event> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber);
         void Raise(string eventName, object content);
         void Add(Event specialOffer);
-        long GetStartIdFromDatastore();
+        long GetNextSequencyEventNumber();
     }
 }

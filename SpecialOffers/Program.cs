@@ -1,19 +1,21 @@
 using SpecialOffers.Data;
-using SpecialOffers.Domain;
+using SpecialOffers.Domain.Interfaces;
+using SpecialOffers.Service;
+using SpecialOffers.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddTransient<IEventStore, EventStore>();
+builder.Services.AddDependencies(builder.Configuration);
+builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
 
 var app = builder.Build();
+app.AddDataToDB();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

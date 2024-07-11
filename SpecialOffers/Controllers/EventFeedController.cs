@@ -1,25 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SpecialOffers.Domain;
+using SpecialOffers.Domain.Interfaces;
+using SpecialOffers.Domain.Models;
 
 namespace SpecialOffers.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class EventFeedController : ControllerBase
+    
+    public class EventFeedController : BaseController
     {
-        private readonly IEventStore eventStore;
+        private readonly IEventService _service;
 
-        public EventFeedController(IEventStore eventStore) =>
-          this.eventStore = eventStore;
+        public EventFeedController(IEventService service) { _service = service; }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Event>> GetEvents([FromQuery] int start, [FromQuery] int end)
-        {
-
-            if (start < 0 || end < start)
-                return BadRequest();
-
-            return Ok(eventStore.GetEvents(start, end));
+        public async Task<ActionResult<IEnumerable<SpecialOfferViewModel>>> GetEvents([FromQuery] int start, [FromQuery] int end)
+        {            
+            return CustomResponse(await _service.GetEvents(start, end));
         }
 
     }

@@ -1,23 +1,27 @@
-﻿using ProductCatalog.Data;
-using ProductCatalog.Domain;
-using ProductCatalog.Services;
+﻿using SpecialOffers.Data;
+using SpecialOffers.Domain.Interfaces;
+using SpecialOffers.Service;
 
-namespace ProductCatalog.Utils
+namespace SpecialOffers.Utils
 {
     public static class ExtentionMethods
     {
         public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
-        {            
+        {
             var DataBaseSettingsSection = configuration.GetSection(nameof(DataBaseSettings));
             var dataBaseSettings = DataBaseSettingsSection.Get<DataBaseSettings>();
             services.Configure<DataBaseSettings>(DataBaseSettingsSection);
 
+
+            services.AddTransient<ISpecialOfferRepository, SpecialOfferRepository>();
+            services.AddTransient<ISpecialOfferService, SpecialOfferService>();
+            services.AddTransient<IEventService, EventService>();
+
             services.AddSingleton<ApplicationContext>();
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IProductService, ProductService>();
 
             return services;
         }
+
 
         public static void AddDataToDB(this IHost webHost)
         {

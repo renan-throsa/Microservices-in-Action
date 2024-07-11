@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LoyaltyProgram.Domain
+namespace LoyaltyProgram.Domain.Entities
 {
 
     public record Event(

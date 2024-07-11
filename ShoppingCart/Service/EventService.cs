@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using ShoppingCart.Domain.Interfaces;
 using ShoppingCart.Domain.Models;
+using System.Net;
 
 namespace ShoppingCart.Service
 {
@@ -20,10 +21,10 @@ namespace ShoppingCart.Service
         public async Task<OperationResultModel> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
         {
             var result = await _eventRepository.GetEvents(firstEventSequenceNumber, lastEventSequenceNumber);
-            return Response(ResponseStatus.Ok, result);
+            return Response(HttpStatusCode.OK, result);
         }
 
-        private OperationResultModel Response(ResponseStatus valide, object? result = null)
+        private OperationResultModel Response(HttpStatusCode valide, object? result = null)
         {
             return
             new OperationResultModel

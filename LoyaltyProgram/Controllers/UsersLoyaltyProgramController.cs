@@ -1,18 +1,18 @@
-﻿using LoyaltyProgram.Data;
-using LoyaltyProgram.Domain;
+﻿using LoyaltyProgram.Domain.Entities;
+using LoyaltyProgram.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LoyaltyProgram.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersLoyaltyProgramController : ControllerBase
     {
 
-        private readonly ILoyaltyProgramUserStore userStore;
-        private readonly IEventStore eventStore;
+        private readonly ILoyaltyProgramRepository userStore;
+        private readonly IEventRepository eventStore;
 
-        public UsersController(ILoyaltyProgramUserStore userStore, IEventStore eventStore)
+        public UsersLoyaltyProgramController(ILoyaltyProgramRepository userStore, IEventRepository eventStore)
         {
             this.userStore = userStore;
             this.eventStore = eventStore;
