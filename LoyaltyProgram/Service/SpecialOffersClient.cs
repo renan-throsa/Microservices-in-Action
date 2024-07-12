@@ -1,80 +1,39 @@
-﻿using Quartz;
+﻿using LoyaltyProgram.Domain.Interfaces;
+using LoyaltyProgram.Domain.Models;
 using System.Text.Json;
-using LoyaltyProgram.Domain.Entities;
-using LoyaltyProgram.Domain.Interfaces;
 
 namespace LoyaltyProgram.Service
 {
-    [DisallowConcurrentExecution]
-    public class SpecialOffersClient : ISpecialOffersClient, IJob
+
+    public class SpecialOffersClient : ISpecialOffersClient
     {
-        private readonly IEventRepository _store;
-        private readonly ILogger<SpecialOffersClient> _logger;
-        private readonly IHttpClientFactory _factory;
+        private readonly HttpClient _client;
 
-        public SpecialOffersClient(IEventRepository store, ILogger<SpecialOffersClient> logger, IHttpClientFactory factory)
+        public SpecialOffersClient(HttpClient client)
         {
-            _store = store;
-            _factory = factory;
-            _logger = logger;
+            _client = client;
+        }
+        
+        public async Task<IEnumerable<SpecialOfferViewModel>> GetOffers(long firstEventSequenceNumber, long lastEventSequenceNumber)
+        {
+            using var response = await _client.GetAsync($"EventFeed?start={firstEventSequenceNumber}&end={lastEventSequenceNumber}");
+            
+            return await ConvertToSpecialOffers(response);
         }
 
-        public async Task Execute(IJobExecutionContext context)
+        private static async Task<IEnumerable<SpecialOfferViewModel>> ConvertToSpecialOffers(HttpResponseMessage response)
         {
-            _logger.LogInformation("Fetching latest events");
-            var start = _store.GetNextSequencyEventNumber();
-            var end = 5;
+            response.EnsureSuccessStatusCode();
 
-            HttpResponseMessage resp;
+            var result = await response.Content.ReadAsStringAsync();
 
-            try
+            var option = new JsonSerializerOptions
             {
-                resp = await _factory.CreateClient("events").GetAsync($"?start={start}&end={end}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex.Message);
-                return;
-            }
+                PropertyNameCaseInsensitive = false
+            };
 
-
-            if (resp.IsSuccessStatusCode)
-            {
-                var content = await resp.Content.ReadAsStringAsync();
-                ProcessEvents(content);
-                _logger.LogInformation("Latest events updated");
-            }
-            else
-            {
-                _logger.LogError($"Request failed with status code: {resp.StatusCode}");
-
-            }
+            return JsonSerializer.Deserialize<List<SpecialOfferViewModel>>(result, option) ?? new();
 
         }
-
-        public void ProcessEvents(string content)
-        {
-
-            var events = JsonSerializer.Deserialize<List<Event>>(content);
-
-            if (events is null)
-            {
-                _logger.LogInformation($"No event fetched");
-                return;
-            }
-
-            foreach (Event specialOffer in events)
-            {
-                if (specialOffer is not null)
-                {
-                    _store.Add(specialOffer);
-                    _logger.LogInformation($"{specialOffer.Name} event added");
-                    Console.WriteLine();
-                }
-
-            }
-
-        }
-
     }
 }

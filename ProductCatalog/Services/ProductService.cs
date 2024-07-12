@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
-using ProductCatalog.Domain;
+using ProductCatalog.Domain.Interfaces;
+using ProductCatalog.Domain.Models;
 using System.Linq.Expressions;
 using System.Net;
 

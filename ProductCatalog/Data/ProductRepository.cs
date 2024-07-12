@@ -1,7 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using ProductCatalog.Domain;
+using ProductCatalog.Domain.Entities;
+using ProductCatalog.Domain.Interfaces;
 using System.Linq.Expressions;
 
 namespace ProductCatalog.Data
@@ -44,9 +45,9 @@ namespace ProductCatalog.Data
 
         public async Task DeleteAsync(ObjectId Id)
         {
-            Product p = await FindSync(Id);
-            p.Available = false;
-            await UpdateAsync(p);            
+            Product product = await FindSync(Id);
+            Product deleteded = product with { Available = false};            
+            await UpdateAsync(deleteded);            
         }
 
         public async Task<IEnumerable<Product>> FindAsync(Expression<Func<Product, bool>> filter)

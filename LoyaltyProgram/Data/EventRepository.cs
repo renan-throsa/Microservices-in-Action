@@ -1,39 +1,50 @@
 ﻿using LoyaltyProgram.Domain.Entities;
 using LoyaltyProgram.Domain.Interfaces;
+using MongoDB.Driver;
 
 namespace LoyaltyProgram.Data
 {
     public class EventRepository : IEventRepository
     {
-        private IEnumerable<Event> _database;
+        private ApplicationContext Context { get; }
 
-        public EventRepository()
+        private IMongoCollection<SpecialOffer> _collection;
+        protected IMongoCollection<SpecialOffer> Collection
         {
-            _database = new List<Event>();
+            get { return _collection ?? (_collection = GetOrCreateEntity($"c_{typeof(SpecialOffer).Name.ToLower()}")); }
         }
 
-        public IEnumerable<Event> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
+        public EventRepository(ApplicationContext context)
         {
-            return _database.Where(x => x.SequenceNumber >= firstEventSequenceNumber && x.SequenceNumber <= lastEventSequenceNumber);
+            Context = context;
         }
 
 
-        public void Raise(string eventName, object content)
+        public Task AddEvents(IEnumerable<SpecialOffer> offers)
         {
-            var next = GetNextSequencyEventNumber();
-            var e = new Event(next, DateTime.Now, eventName, content);
-            _database = _database.Append(e);
+            return Collection.InsertManyAsync(offers);
         }
 
         public long GetNextSequencyEventNumber()
         {
-            if (_database.Any()) return _database.Max(x => x.SequenceNumber) + 1;
+            if (Collection.AsQueryable().Any()) return Collection.AsQueryable().Max(x => x.SequenceNumber) + 1;
             return 1;
         }
 
-        public void Add(Event specialOffer)
+        private IMongoCollection<SpecialOffer> GetOrCreateEntity(string entity)
         {
-            _database.Append(specialOffer);
+            if (Context.DataBase.GetCollection<SpecialOffer>(entity) == null)
+            {
+                return CreateEntity(entity);
+            }
+            return Context.DataBase.GetCollection<SpecialOffer>(entity);
         }
+
+        private IMongoCollection<SpecialOffer> CreateEntity(string entity)
+        {
+            Context.DataBase.CreateCollection(entity);
+            return Context.DataBase.GetCollection<SpecialOffer>(entity);
+        }
+
     }
 }

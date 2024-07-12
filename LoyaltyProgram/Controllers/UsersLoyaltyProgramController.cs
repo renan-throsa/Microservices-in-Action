@@ -21,22 +21,16 @@ namespace LoyaltyProgram.Controllers
         [HttpGet("{userId:int}")]
         public ActionResult<LoyaltyProgramUser> GetUser(int userId)
         {
-            var user = userStore.GetBy(userId);
-
-            return user != null ? Ok(user) : NotFound();
+           
+            return Ok(userId);
         }
 
         [HttpPost]
         public ActionResult<LoyaltyProgramUser> CreateUser([FromBody] LoyaltyProgramUser user)
         {
-            if (user == null)
-                return BadRequest();
-            var newUser = userStore.Save(user);
-            return Created(new Uri($"/users/{newUser.Id}", UriKind.Relative), newUser);
+            return Ok(user);
         }
 
-        [HttpPut("{userId:int}")]
-        public LoyaltyProgramUser UpdateUser(int userId, [FromBody] LoyaltyProgramUser user) => userStore.Save(user) ;
 
     }
 }

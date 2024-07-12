@@ -19,21 +19,31 @@ namespace SpecialOffers.Data
             Context = context;
         }
 
-
         public async Task<IEnumerable<SpecialOffer>> GetOffers(long firstEventSequenceNumber, long lastEventSequenceNumber)
         {
             var query = await Collection.FindAsync(x => x.SequenceNumber >= firstEventSequenceNumber && x.SequenceNumber <= lastEventSequenceNumber);
             return query.ToEnumerable();
         }
 
-        public Task AddOffer(string eventName, string description)
+        public async Task<SpecialOffer> FindSync(string id)
+        {
+            return await FindSync(ObjectId.Parse(id));
+        }
+
+        private async Task<SpecialOffer> FindSync(ObjectId Id)
+        {
+            var query = await Collection.FindAsync(x => x.Id == Id);
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public Task AddSync(string eventName, string description)
         {
             var next = GetNextSequencyEventNumber();
             var e = new SpecialOffer(ObjectId.Empty, next, DateTime.Now, eventName, description);
             return Collection.InsertOneAsync(e);
         }
 
-        public async Task UpdateOffer(SpecialOffer @event)
+        public async Task UpdateAsync(SpecialOffer @event)
         {
             await Collection.FindOneAndReplaceAsync(x => x.Id == @event.Id, @event);
         }
@@ -58,5 +68,6 @@ namespace SpecialOffers.Data
             if (Collection.AsQueryable().Any()) return Collection.AsQueryable().Max(x => x.SequenceNumber) + 1;
             return 1;
         }
+
     }
 }

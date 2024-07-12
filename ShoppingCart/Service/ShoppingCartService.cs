@@ -15,9 +15,9 @@ namespace ShoppingCart.Service
         private readonly IMapper _mapper;
         private readonly ILogger<IShoppingCartService> _logger;
 
-        public ShoppingCartService(IShoppingCartRepository shoppingCartStore, IProductCatalogClient productCatalogClient, IEventRepository eventStore, IMapper mapper, ILogger<IShoppingCartService> logger)
+        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IProductCatalogClient productCatalogClient, IEventRepository eventStore, IMapper mapper, ILogger<IShoppingCartService> logger)
         {
-            _shoppingCartRepository = shoppingCartStore;
+            _shoppingCartRepository = shoppingCartRepository;
             _productCatalogClient = productCatalogClient;
             _eventStore = eventStore;
             _mapper = mapper;

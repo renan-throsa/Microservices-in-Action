@@ -1,5 +1,5 @@
 ﻿using ProductCatalog.Data;
-using ProductCatalog.Domain;
+using ProductCatalog.Domain.Interfaces;
 using ProductCatalog.Services;
 
 namespace ProductCatalog.Utils

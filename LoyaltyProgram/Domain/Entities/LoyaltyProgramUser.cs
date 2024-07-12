@@ -1,6 +1,8 @@
-﻿namespace LoyaltyProgram.Domain.Entities
+﻿using MongoDB.Bson;
+
+namespace LoyaltyProgram.Domain.Entities
 {
-    public record LoyaltyProgramUser(int Id, string Name, int LoyaltyPoints, LoyaltyProgramSettings Settings);
+    public record LoyaltyProgramUser(ObjectId Id, string Name, int LoyaltyPoints, LoyaltyProgramSettings Settings);
 
     public record LoyaltyProgramSettings()
     {

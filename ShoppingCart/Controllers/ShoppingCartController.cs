@@ -20,8 +20,8 @@ namespace ShoppingCart.Controllers
         [HttpGet("{userId}")]
         public async Task<ActionResult<CartViewModel>> Get(string userId)
         {
-            var response = await _shoppingCartService.FindSync(userId); ;
-            return CustomResponse(response);
+            var result = await _shoppingCartService.FindSync(userId); ;
+            return Customresult(result);
         }
 
 
@@ -29,28 +29,28 @@ namespace ShoppingCart.Controllers
         public async Task<ActionResult<CartViewModel>> Post(CartPostModel model)
         {
             var result = await _shoppingCartService.SaveAsync(model);
-            return CustomResponse(result);
+            return Customresult(result);
         }
 
         [HttpDelete("items")]
         public async Task<ActionResult<CartViewModel>> Delete(CartPostModel model)
         {
             var result = await _shoppingCartService.DeleteAsync(model);
-            return CustomResponse(result);
+            return Customresult(result);
         }
 
-        private ActionResult CustomResponse(OperationResultModel result)
+        private ActionResult Customresult(OperationResultModel result)
         {            
 
             if (!result.IsValid)
             {
-                return ErrorResponse(result);
+                return Errorresult(result);
             }
 
-            return Ok(result.Content ?? string.Empty);
+            return Ok(result.Content);
         }
 
-        private ActionResult ErrorResponse(OperationResultModel result)
+        private ActionResult Errorresult(OperationResultModel result)
         {
             var content = result.Content;
             switch (result.Status)

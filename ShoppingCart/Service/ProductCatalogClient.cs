@@ -1,5 +1,6 @@
 ﻿using ShoppingCart.Domain.Entites;
 using ShoppingCart.Domain.Interfaces;
+using ShoppingCart.Domain.Models;
 using System.Text.Json;
 
 namespace ShoppingCart.Service
@@ -21,42 +22,24 @@ namespace ShoppingCart.Service
 
         public async Task<IEnumerable<CartItem>> GetShoppingCartItems(string[] productCatalogIds)
         {
-            using var response = await RequestProductFromProductCatalog(productCatalogIds);
-            return await ConvertToShoppingCartItems(response);
-        }
-
-        private async Task<HttpResponseMessage> RequestProductFromProductCatalog(string[] productCatalogIds)
-        {
             var productsResource = string.Format(getProductPathTemplate, string.Join("&Id=", productCatalogIds));
-            return await client.GetAsync(productsResource);
-        }
-
+            using var response = await client.GetAsync(productsResource);
+            return await ConvertToShoppingCartItems(response);
+        }      
 
         private static async Task<IEnumerable<CartItem>> ConvertToShoppingCartItems(HttpResponseMessage response)
         {
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
+
             var option = new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = false
             };
 
-            var products = JsonSerializer.Deserialize<List<ProductCatalogProduct>>(result,option) ?? new();
-
-            return products
-              .Select(p =>
-                new CartItem(
-                  p.Id,
-                  p.Name,
-                  p.Description,
-                  p.Price
-              ));
+            return JsonSerializer.Deserialize<List<CartItem>>(result,option) ?? new();
+            
         }
-
-        private record ProductCatalogProduct(
-          string Id,
-          string Name,
-          string Description,
-          Money Price);
+        
     }
 }

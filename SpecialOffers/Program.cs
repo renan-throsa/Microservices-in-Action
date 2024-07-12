@@ -1,6 +1,3 @@
-using SpecialOffers.Data;
-using SpecialOffers.Domain.Interfaces;
-using SpecialOffers.Service;
 using SpecialOffers.Utils;
 
 var builder = WebApplication.CreateBuilder(args);

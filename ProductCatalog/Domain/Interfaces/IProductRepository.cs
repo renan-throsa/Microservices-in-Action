@@ -1,13 +1,14 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver.Linq;
+using ProductCatalog.Domain.Entities;
 using System.Linq.Expressions;
 
-namespace ProductCatalog.Domain
+namespace ProductCatalog.Domain.Interfaces
 {
     public interface IProductRepository
     {
-        Task AddAsync(Product product);
-        Task AddAsync(IEnumerable<Product> products);
+        Task AddAsync(Product entity);
+        Task AddAsync(IEnumerable<Product> entities);
         Task<Product> FindSync(ObjectId key);
         Task<Product> FindSync(string Id);
         Task<IEnumerable<Product>> FindAsync(Expression<Func<Product, bool>> filter);

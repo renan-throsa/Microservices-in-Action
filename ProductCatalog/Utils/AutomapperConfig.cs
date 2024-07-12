@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
-using ProductCatalog.Domain;
-using ProductCatalog.Services;
+using ProductCatalog.Domain.Entities;
+using ProductCatalog.Domain.Models;
 
 namespace ProductCatalog.Utils
 {

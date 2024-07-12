@@ -15,7 +15,7 @@ namespace SpecialOffers.Controllers
                 return ErrorResponse(result);
             }
 
-            return Ok(result.Content ?? string.Empty);
+            return Ok(result.Content);
         }
 
         protected ActionResult ErrorResponse(OperationResultModel result)

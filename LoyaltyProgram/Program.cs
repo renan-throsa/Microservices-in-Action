@@ -1,9 +1,5 @@
-using LoyaltyProgram.Data;
-using LoyaltyProgram.Domain.Interfaces;
-using LoyaltyProgram.Service;
+using LoyaltyProgram.Jobs;
 using LoyaltyProgram.Utils;
-using Microsoft.Net.Http.Headers;
-using Polly;
 using Quartz;
 using Quartz.AspNetCore;
 
@@ -17,19 +13,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IEventRepository, EventRepository>();
-builder.Services.AddTransient<ILoyaltyProgramRepository, LoyaltyProgramRepository>();
-builder.Services
-    .AddHttpClient("events", (HttpClient client) =>
-    {
-        string address = clientSettingsSection.Get<ClientSettings>().Route; client.BaseAddress = new Uri(address); client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-    })
-    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(250 * Math.Pow(2, attempt))));
+builder.Services.AddAutoMapper(typeof(AutomapperConfig));
+builder.Services.AddDependencies(builder.Configuration);
+builder.Services.AddTypedClient(builder.Configuration);
 
-
-
-
-builder.Services.Configure<ClientSettings>(clientSettingsSection);
 
 builder.Services.AddQuartzServer(options =>
 {
@@ -41,8 +28,8 @@ builder.Services.AddQuartzServer(options =>
 builder.Services.AddQuartz(q =>
 {
 
-    var jobKey = new JobKey("EventsFetching");
-    q.AddJob<SpecialOffersClient>(opts => opts.WithIdentity(jobKey));
+    var jobKey = new JobKey("OffersFetching");
+    q.AddJob<SpecialOffersJob>(opts => opts.WithIdentity(jobKey));
     q.AddTrigger(opts =>
         opts
         .ForJob(jobKey)

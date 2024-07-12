@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
-using ProductCatalog.Services;
+using ProductCatalog.Domain.Models;
 using System.Linq.Expressions;
 
-namespace ProductCatalog.Domain
+namespace ProductCatalog.Domain.Interfaces
 {
     public interface IProductService
     {

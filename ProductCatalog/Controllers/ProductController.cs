@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProductCatalog.Domain;
-using ProductCatalog.Services;
+using ProductCatalog.Domain.Interfaces;
+using ProductCatalog.Domain.Models;
 using System.Net;
 using System.Text.Json;
 

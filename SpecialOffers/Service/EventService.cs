@@ -9,15 +9,19 @@ namespace SpecialOffers.Service
     public class EventService : IEventService
     {
         private readonly ISpecialOfferRepository _eventRepository;
+        private readonly ILogger<IEventService> _logger;
+
         private readonly IMapper _mapper;
-        public EventService(ISpecialOfferRepository eventRepository, IMapper mapper)
+        public EventService(ISpecialOfferRepository eventRepository, IMapper mapper, ILogger<IEventService> logger)
         {
             _eventRepository = eventRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<OperationResultModel> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
         {
+            _logger.LogInformation($"Fetching offers from {firstEventSequenceNumber} to {lastEventSequenceNumber}");
             var result = await _eventRepository.GetOffers(firstEventSequenceNumber, lastEventSequenceNumber);
             return Response(HttpStatusCode.OK, _mapper.Map<IEnumerable<SpecialOfferViewModel>>(result));
         }
