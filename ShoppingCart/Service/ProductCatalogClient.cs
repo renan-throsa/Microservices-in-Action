@@ -24,12 +24,9 @@ namespace ShoppingCart.Service
         {
             var productsResource = string.Format(getProductPathTemplate, string.Join("&Id=", productCatalogIds));
             using var response = await client.GetAsync(productsResource);
-            return await ConvertToShoppingCartItems(response);
-        }      
 
-        private static async Task<IEnumerable<CartItem>> ConvertToShoppingCartItems(HttpResponseMessage response)
-        {
             response.EnsureSuccessStatusCode();
+
             var result = await response.Content.ReadAsStringAsync();
 
             var option = new JsonSerializerOptions
@@ -37,9 +34,10 @@ namespace ShoppingCart.Service
                 PropertyNameCaseInsensitive = false
             };
 
-            return JsonSerializer.Deserialize<List<CartItem>>(result,option) ?? new();
-            
-        }
+            return JsonSerializer.Deserialize<List<CartItem>>(result, option) ?? new();
+        }      
+
+        
         
     }
 }

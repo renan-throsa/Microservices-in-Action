@@ -1,10 +1,11 @@
+using SpecialOffers.Filters;
 using SpecialOffers.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add<LogAsyncResourceFilter>());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDependencies(builder.Configuration);

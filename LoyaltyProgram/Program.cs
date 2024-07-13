@@ -1,3 +1,4 @@
+using LoyaltyProgram.Filters;
 using LoyaltyProgram.Jobs;
 using LoyaltyProgram.Utils;
 using Quartz;
@@ -9,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var clientSettingsSection = builder.Configuration.GetSection(nameof(ClientSettings));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add<LogAsyncResourceFilter>());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

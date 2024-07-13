@@ -8,5 +8,5 @@ namespace ProductCatalog.Domain.Entities
         string Code,
         string Description,
         Money Price,
-        bool Available = true);
+        bool Available);
 }

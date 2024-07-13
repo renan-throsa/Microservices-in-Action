@@ -3,14 +3,14 @@
     public sealed class DataBaseSettings
     {
         public string Host { get; set; }
-        public string Database { get; set; }
+        public string DatabaseName { get; set; }
         public string NoSqlDataBase { get; set; }
 
-        public string ConnectionString { get { return $"{Host + "/" + Database}"; } }
+        public string ConnectionString { get { return $"{Host + "/" + DatabaseName}"; } }
         public DataBaseSettings()
         {
             Host = string.Empty;
-            Database = string.Empty;
+            DatabaseName = string.Empty;
             NoSqlDataBase = string.Empty;
         }
     }

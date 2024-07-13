@@ -15,15 +15,14 @@ namespace ProductCatalog.Services
 
         public ProductService(IProductRepository repository, IMapper mapper, ILogger<IProductService> logger)
         {
-            this._repository = repository;
-            this._mapper = mapper;
-            this._logger = logger;
+            _repository = repository;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         public OperationResultModel All()
-        {
-            _logger.LogInformation($"Listing {typeof(ProductViewModel).FullName}");
-            return Response(HttpStatusCode.OK, _mapper.ProjectTo<ProductViewModel>(_repository.GetQueryable()));
+        {            
+            return Response(HttpStatusCode.OK, _mapper.ProjectTo<IEnumerable<ProductViewModel>>(_repository.GetQueryable()));
         }
 
         public Task<OperationResultModel> FindAsync(Expression<Func<ProductViewModel, bool>> filter)
@@ -32,8 +31,7 @@ namespace ProductCatalog.Services
         }
 
         public async Task<OperationResultModel> FindSync(ObjectId key)
-        {
-            _logger.LogInformation($"Searching by key:{key}");
+        {            
             var entity = await _repository.FindSync(key);
             if (entity == null)
             {
@@ -46,8 +44,7 @@ namespace ProductCatalog.Services
         }
 
         public async Task<OperationResultModel> FindSync(string Id)
-        {
-            _logger.LogInformation($"Searching by key:{Id}");
+        {            
             if (ObjectId.TryParse(Id, out var _))
             {
                 var entity = await _repository.FindSync(Id);
@@ -69,8 +66,7 @@ namespace ProductCatalog.Services
 
         public async Task<OperationResultModel> FindSync(string[] Ids)
         {
-            Ids = Ids.Distinct().ToArray();
-            _logger.LogInformation($"Searching by keys:{string.Format("[{0}]", string.Join(",", Ids))}");
+            Ids = Ids.Distinct().ToArray();           
             var result = new List<ProductViewModel>();
             foreach (var Id in Ids)
             {

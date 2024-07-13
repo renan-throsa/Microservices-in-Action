@@ -26,8 +26,7 @@ namespace ShoppingCart.Service
         }
 
         public async Task<OperationResultModel> FindSync(string userId)
-        {
-            _logger.LogInformation($"Fetching {typeof(CartViewModel).FullName} whit id {userId}");
+        {           
             if (ObjectId.TryParse(userId, out var _))
             {
                 var entity = await _shoppingCartRepository.FindSync(userId);
@@ -56,8 +55,7 @@ namespace ShoppingCart.Service
                 _logger.LogError($"Unable to parse the object: {model.UserId}");
                 return Response(HttpStatusCode.BadRequest, $"Unable to parse the object: {model.UserId}");
             }
-
-            _logger.LogInformation($"Fetching {typeof(CartViewModel).FullName} whit id {userId}");
+            
             var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
 
             if (shoppingCart == null)
@@ -67,7 +65,7 @@ namespace ShoppingCart.Service
                 return Response(HttpStatusCode.NotFound, message);
             }
 
-            _logger.LogInformation($"Removing products {string.Format("[{0}]", string.Join(",", model.ProductIds))} from user's cart with id {model.UserId}");            
+            _logger.LogWarning($"Removing products {string.Format("[{0}]", string.Join(",", model.ProductIds))} from user's cart with id {model.UserId}");            
             shoppingCart.RemoveItems(model.ProductIds, _eventStore);
 
             await _shoppingCartRepository.UpdateSync(shoppingCart);
@@ -99,7 +97,6 @@ namespace ShoppingCart.Service
                 _logger.LogCritical(ex.Message);
                 return Response(HttpStatusCode.InternalServerError, ex.Message);
             }                     
-
 
             if (shoppingCart is null)
             {

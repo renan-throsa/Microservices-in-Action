@@ -18,6 +18,6 @@ namespace ProductCatalog.Domain.Interfaces
         Task<Product> UpdateAsync(Product entity);
         Task<IEnumerable<Product>> UpdateAsync(IEnumerable<Product> entities);
         IEnumerable<Product> All(Expression<Func<Product, Product>> projection);
-        IMongoQueryable<Product> GetQueryable();
+        IQueryable<Product> GetQueryable();
     }
 }

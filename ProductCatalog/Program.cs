@@ -1,3 +1,4 @@
+using ProductCatalog.Filters;
 using ProductCatalog.Utils;
 
 namespace ProductCatalog
@@ -10,9 +11,10 @@ namespace ProductCatalog
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options=> options.Filters.Add<LogAsyncResourceFilter>());
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddHealthCheckesConfig();
             builder.Services.AddDependencies(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
@@ -30,6 +32,7 @@ namespace ProductCatalog
 
             app.UseAuthorization();
 
+            app.UseHealthChecksConfig();
 
             app.MapControllers();
 

@@ -21,9 +21,8 @@ namespace ProductCatalog.Controllers
         [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         [HttpGet("GetAll")]
         public ActionResult<IEnumerable<ProductViewModel>> Get()
-        {
-            var response = _service.All();
-            return CustomResponse(response);
+        {            
+            return CustomResponse(_service.All());
         }
 
         [HttpGet("GetOne/{Id}")]

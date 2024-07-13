@@ -67,7 +67,7 @@ namespace ProductCatalog.Data
             return await FindSync(ObjectId.Parse(Id));
         }
 
-        public IMongoQueryable<Product> GetQueryable()
+        public IQueryable<Product> GetQueryable()
         {
             return _entities.AsQueryable();
         }
