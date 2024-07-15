@@ -5,6 +5,5 @@ namespace LoyaltyProgram.Domain.Interfaces
     public interface IEventRepository
     {        
         Task AddEvents(IEnumerable<SpecialOffer> offers);
-        long GetNextSequencyEventNumber();
     }
 }

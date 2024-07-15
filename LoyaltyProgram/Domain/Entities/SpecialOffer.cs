@@ -4,10 +4,11 @@ namespace LoyaltyProgram.Domain.Entities
 {
     public record SpecialOffer(
         ObjectId Id,
-        long SequenceNumber,
         DateTime OccuredAt,
+        DateTime DueDate,
         string Name,
         string Description,
-        ObjectId? OldOfferId = null);
+        HashSet<string> ProductsIds,
+        float discount);
 
 }

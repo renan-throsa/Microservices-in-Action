@@ -14,9 +14,13 @@ namespace LoyaltyProgram.Service
             _client = client;
         }
         
-        public async Task<IEnumerable<SpecialOfferViewModel>> GetOffers(long firstEventSequenceNumber, long lastEventSequenceNumber)
+        /// <summary>
+        /// Get today's offers
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<SpecialOfferViewModel>> GetOffers()
         {
-            using var response = await _client.GetAsync($"EventFeed?start={firstEventSequenceNumber}&end={lastEventSequenceNumber}");
+            using var response = await _client.GetAsync($"EventFeed");
             
             return await ConvertToSpecialOffers(response);
         }

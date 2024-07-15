@@ -7,14 +7,18 @@ namespace SpecialOffers.Controllers
     
     public class EventFeedController : BaseController
     {
-        private readonly IEventService _service;
+        private readonly ISpecialOfferService _specialOfferService;
 
-        public EventFeedController(IEventService service) { _service = service; }
+
+        public EventFeedController(ISpecialOfferService specialOfferService)
+        {
+            _specialOfferService = specialOfferService;
+        }        
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SpecialOfferViewModel>>> GetEvents([FromQuery] int start, [FromQuery] int end)
-        {            
-            return CustomResponse(await _service.GetEvents(start, end));
+        public async Task<ActionResult<IEnumerable<SpecialOfferViewModel>>> GetEvents()
+        {
+            return CustomResponse(await _specialOfferService.FindOffers());
         }
 
     }

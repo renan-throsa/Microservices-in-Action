@@ -15,7 +15,7 @@ namespace SpecialOffers.Service
         private readonly IMapper _mapper;
         private readonly ILogger<ISpecialOfferService> _logger;
 
-        public SpecialOfferService(ISpecialOfferRepository specialOfferRepository,IMapper mapper, ILogger<ISpecialOfferService> logger)
+        public SpecialOfferService(ISpecialOfferRepository specialOfferRepository, IMapper mapper, ILogger<ISpecialOfferService> logger)
         {
             _specialOfferRepository = specialOfferRepository;
             _mapper = mapper;
@@ -38,7 +38,39 @@ namespace SpecialOffers.Service
             throw new NotImplementedException();
         }
 
-        public async  Task<OperationResultModel> FindSync(string Id)
+        public async Task<OperationResultModel> FindOffers(HashSet<string> productIds)
+        {
+            var query = await _specialOfferRepository.FindOffers(productIds);
+
+            if (!query.Any()) return Response(HttpStatusCode.NoContent);
+
+            return Response(HttpStatusCode.OK, _mapper.Map<IEnumerable<SpecialOfferViewModel>>(query));
+
+            /*
+            var query = _specialOfferRepository.GetQueryable().Where(so => so.DueDate < DateTime.Now);
+
+            if (!query.Any()) return Response(HttpStatusCode.NoContent);
+
+            query = query.Where(so => so.ProductsIds.Intersect(productIds).Any());
+
+            if (!query.Any()) return Response(HttpStatusCode.NoContent);
+
+            return Response(HttpStatusCode.OK, query.ToList());
+
+            */
+        }
+
+        public async Task<OperationResultModel> FindOffers()
+        {
+            var query = await _specialOfferRepository.FindOffers();
+
+            if (!query.Any()) return Response(HttpStatusCode.NoContent);
+
+            return Response(HttpStatusCode.OK, _mapper.Map<IEnumerable<SpecialOfferViewModel>>(query));
+            
+        }
+
+        public async Task<OperationResultModel> FindSync(string Id)
         {
             _logger.LogInformation($"Fetching {typeof(SpecialOfferViewModel).FullName} whit id {Id}");
             if (ObjectId.TryParse(Id, out var _))
@@ -66,12 +98,12 @@ namespace SpecialOffers.Service
         }
 
 
-        private OperationResultModel Response(HttpStatusCode valide, object? result = null)
+        private OperationResultModel Response(HttpStatusCode status, object? result = null)
         {
             return
             new OperationResultModel
             {
-                Status = valide,
+                Status = status,
                 Content = result
             };
         }

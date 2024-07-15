@@ -15,7 +15,6 @@ namespace SpecialOffers.Utils
 
             services.AddTransient<ISpecialOfferRepository, SpecialOfferRepository>();
             services.AddTransient<ISpecialOfferService, SpecialOfferService>();
-            services.AddTransient<IEventService, EventService>();
 
             services.AddSingleton<ApplicationContext>();
 

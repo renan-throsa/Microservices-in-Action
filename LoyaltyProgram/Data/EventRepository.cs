@@ -25,12 +25,6 @@ namespace LoyaltyProgram.Data
             return Collection.InsertManyAsync(offers);
         }
 
-        public long GetNextSequencyEventNumber()
-        {
-            if (Collection.AsQueryable().Any()) return Collection.AsQueryable().Max(x => x.SequenceNumber) + 1;
-            return 1;
-        }
-
         private IMongoCollection<SpecialOffer> GetOrCreateEntity(string entity)
         {
             if (Context.DataBase.GetCollection<SpecialOffer>(entity) == null)

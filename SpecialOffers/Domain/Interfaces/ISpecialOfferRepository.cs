@@ -4,9 +4,12 @@ namespace SpecialOffers.Domain.Interfaces
 {
     public interface ISpecialOfferRepository
     {
-        Task<IEnumerable<SpecialOffer>> GetOffers(long firstEventSequenceNumber, long lastEventSequenceNumber);
+        Task<IEnumerable<SpecialOffer>> FindOffers();
+        Task<IEnumerable<SpecialOffer>> FindOffers(HashSet<string> productIds);
         Task<SpecialOffer> FindSync(string id);
-        Task AddSync(string offerName, string description);
+        Task AddSync(SpecialOffer offer);
         Task UpdateAsync(SpecialOffer offer);
+        IQueryable<SpecialOffer> GetQueryable();
+
     }
 }

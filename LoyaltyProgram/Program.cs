@@ -35,9 +35,9 @@ builder.Services.AddQuartz(q =>
         opts
         .ForJob(jobKey)
         .WithIdentity(jobKey.Name + " trigger")
-        .StartAt(DateTime.Now.AddSeconds(30))
+        .StartAt(DateTime.Now.AddSeconds(10))
         .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromMinutes(5)).RepeatForever())
-    ); ;
+    ); 
 
 });
 

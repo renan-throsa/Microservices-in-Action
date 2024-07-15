@@ -10,9 +10,10 @@ namespace LoyaltyProgram.Utils
         public AutomapperConfig()
         {
             CreateMap<SpecialOfferViewModel, SpecialOffer>()
-               .ForMember(cart => cart.Id, x => x.MapFrom(y => y.Id == null ? ObjectId.Empty : new ObjectId(y.Id)))               
+               .ForMember(entity => entity.Id, x => x.MapFrom(y => y.Id == null ? ObjectId.Empty : new ObjectId(y.Id)))
+               .ForMember(entity => entity.ProductsIds, x => x.MapFrom(y => new HashSet<string>(y.productsIds)))
                .ReverseMap();
-            
+  
         }
     }
 }

@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invoice", "Invoice\Invoice.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecialOffers", "SpecialOffers\SpecialOffers.csproj", "{F46E64F6-0A89-42F9-BDC6-B11897631E23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog", "ProductCatalog\ProductCatalog.csproj", "{E0A9DE2A-181C-4D3E-BFFD-AF2989097936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog", "ProductCatalog\ProductCatalog.csproj", "{E0A9DE2A-181C-4D3E-BFFD-AF2989097936}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recomendation", "Recomendation\Recomendation.csproj", "{D93A90A8-2350-41D3-862D-214A55E8F0D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceCalculation", "PriceCalculation\PriceCalculation.csproj", "{659BEA76-88AD-471E-A335-40ABAC3A9F10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{E0A9DE2A-181C-4D3E-BFFD-AF2989097936}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0A9DE2A-181C-4D3E-BFFD-AF2989097936}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0A9DE2A-181C-4D3E-BFFD-AF2989097936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D93A90A8-2350-41D3-862D-214A55E8F0D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D93A90A8-2350-41D3-862D-214A55E8F0D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D93A90A8-2350-41D3-862D-214A55E8F0D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D93A90A8-2350-41D3-862D-214A55E8F0D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{659BEA76-88AD-471E-A335-40ABAC3A9F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{659BEA76-88AD-471E-A335-40ABAC3A9F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{659BEA76-88AD-471E-A335-40ABAC3A9F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{659BEA76-88AD-471E-A335-40ABAC3A9F10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -24,13 +24,12 @@ namespace LoyaltyProgram.Service
         public async Task FetchEvents()
         {
             _logger.LogInformation("Fetching latest events");
-
-            var next = _repository.GetNextSequencyEventNumber();
+            
             IEnumerable<SpecialOfferViewModel> resp;
 
             try
             {
-                resp = await _specialOffersClient.GetOffers(next, next + 5);
+                resp = await _specialOffersClient.GetOffers();
             }
             catch (Exception ex)
             {

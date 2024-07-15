@@ -35,6 +35,9 @@ namespace SpecialOffers.Controllers
                 case HttpStatusCode.Conflict:
                     return Conflict(content);
 
+                case HttpStatusCode.NoContent:
+                    return NoContent();
+
                 default:
                     return Problem(statusCode: ((int)result.Status), detail: (string)content);
             }

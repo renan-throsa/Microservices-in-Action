@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using SpecialOffers.Domain.Entities;
 using SpecialOffers.Domain.Interfaces;
+
 namespace SpecialOffers.Data
 {
     public class SpecialOfferRepository : ISpecialOfferRepository
@@ -19,10 +20,10 @@ namespace SpecialOffers.Data
             Context = context;
         }
 
-        public async Task<IEnumerable<SpecialOffer>> GetOffers(long firstEventSequenceNumber, long lastEventSequenceNumber)
+        public async Task<IEnumerable<SpecialOffer>> FindOffers()
         {
-            var query = await Collection.FindAsync(x => x.SequenceNumber >= firstEventSequenceNumber && x.SequenceNumber <= lastEventSequenceNumber);
-            return query.ToEnumerable();
+            var query = await Collection.FindAsync(x => x.OccuredAt == DateTime.Today);
+            return await query.ToListAsync();
         }
 
         public async Task<SpecialOffer> FindSync(string id)
@@ -36,16 +37,19 @@ namespace SpecialOffers.Data
             return await query.FirstOrDefaultAsync();
         }
 
-        public Task AddSync(string eventName, string description)
+        public Task AddSync(SpecialOffer offer)
         {
-            var next = GetNextSequencyEventNumber();
-            var e = new SpecialOffer(ObjectId.Empty, next, DateTime.Now, eventName, description);
-            return Collection.InsertOneAsync(e);
+            return Collection.InsertOneAsync(offer);
         }
 
         public async Task UpdateAsync(SpecialOffer @event)
         {
             await Collection.FindOneAndReplaceAsync(x => x.Id == @event.Id, @event);
+        }
+
+        public IQueryable<SpecialOffer> GetQueryable()
+        {
+            return Collection.AsQueryable();
         }
 
         private IMongoCollection<SpecialOffer> GetOrCreateEntity(string entity)
@@ -63,11 +67,11 @@ namespace SpecialOffers.Data
             return Context.DataBase.GetCollection<SpecialOffer>(entity);
         }
 
-        private long GetNextSequencyEventNumber()
+        public async Task<IEnumerable<SpecialOffer>> FindOffers(HashSet<string> productIds)
         {
-            if (Collection.AsQueryable().Any()) return Collection.AsQueryable().Max(x => x.SequenceNumber) + 1;
-            return 1;
-        }
+            var query = await Collection.FindAsync(so => so.DueDate >= DateTime.Today && so.ProductsIds.Intersect(productIds).Any());
 
+            return await query.ToListAsync();
+        }
     }
 }

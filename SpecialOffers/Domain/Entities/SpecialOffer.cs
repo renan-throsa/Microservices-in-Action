@@ -3,11 +3,12 @@
 namespace SpecialOffers.Domain.Entities
 {
     public record SpecialOffer(
-        ObjectId Id, 
-        long SequenceNumber, 
+        ObjectId Id,
         DateTime OccuredAt, 
+        DateTime DueDate, 
         string Name, 
-        string Description, 
-        ObjectId? OldOfferId = null);
+        string Description,
+        HashSet<string> ProductsIds,
+        float discount);
 
 }

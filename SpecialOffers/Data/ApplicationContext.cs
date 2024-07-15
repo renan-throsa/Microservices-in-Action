@@ -50,14 +50,12 @@ namespace SpecialOffers.Data
         }
 
         private List<SpecialOffer> getList()
-        {
-            var objectId = ObjectId.GenerateNewId();
+        {            
             return new List<SpecialOffer>{
-                new SpecialOffer(ObjectId.Empty, 1, DateTime.Parse("2020-06-16T20:13:53.6678934+00:00"), "SpecialOfferCreated" ,"Best deal ever!!!"),
-                new SpecialOffer(ObjectId.Empty,2, DateTime.Parse("2020-06-16T20:14:22.6229836+00:00"), "SpecialOfferCreated", "Special offer - just for you"),
-                new SpecialOffer(objectId,3, DateTime.Parse("2020-06-16T20:14:39.841415+00:00"), "SpecialOfferCreated", "Nice deal"),
-                new SpecialOffer(ObjectId.Empty,4, DateTime.Parse("2020-06-16T20:14:47.3420926+00:00"), "SpecialOfferUpdated", "Nice deal - JUST GOT BETTER",objectId),
-                new SpecialOffer(ObjectId.Empty,5, DateTime.Parse("2020-06-16T20:14:51.8986625+00:00"), "SpecialOfferRemoved", "Special offer - just for you")
+                new SpecialOffer(ObjectId.Empty,DateTime.Today, DateTime.Today.AddDays(1),"SpecialOfferCreated" ,"Best deal ever!!!",new HashSet<string>(){"669279420a7cde38d4d0b9df"},0.05f),
+                new SpecialOffer(ObjectId.Empty,DateTime.Today, DateTime.Today.AddDays(3), "SpecialOfferCreated", "Special offer - just for you",new HashSet<string>(){"669279420a7cde38d4d0b9e1"},0.05f),
+                new SpecialOffer(ObjectId.Empty,DateTime.Today, DateTime.Today.AddDays(3), "SpecialOfferCreated", "Nice deal",new HashSet<string>(){"669279420a7cde38d4d0b9e0"},0.10f),
+                new SpecialOffer(ObjectId.Empty,DateTime.Today.AddDays(-4), DateTime.Today.AddDays(-1), "SpecialOfferCreated", "Clean Week - Appliances deal",new HashSet<string>(){"669279420a7cde38d4d0b9ed"},0.10f)
             };
 
         }
