@@ -2,11 +2,11 @@
 {
     public sealed class ClientSettings
     {
-        public string Route { get; set; }
+        public string BaseAddress { get; set; }
 
         public ClientSettings()
         {
-            Route = string.Empty;
+            BaseAddress = string.Empty;
         }
     }
 }

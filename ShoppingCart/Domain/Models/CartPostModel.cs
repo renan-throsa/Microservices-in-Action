@@ -1,9 +1,9 @@
 ﻿namespace ShoppingCart.Domain.Models
 {
-    public class CartPostModel
+    public record CartPostModel
     {
         public string UserId { get; set; }
 
-        public string[] ProductIds { get; set; }
+        public IEnumerable<string> ProductIds { get; set; }
     }
 }

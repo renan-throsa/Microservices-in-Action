@@ -1,4 +1,4 @@
-﻿namespace SpecialOffers.Utils
+﻿namespace PriceCalculation.Utils
 {
     public sealed class ClientSettings
     {

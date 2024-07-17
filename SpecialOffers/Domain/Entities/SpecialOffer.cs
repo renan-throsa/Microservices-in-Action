@@ -11,4 +11,7 @@ namespace SpecialOffers.Domain.Entities
         HashSet<string> ProductsIds,
         float discount);
 
+
+
+
 }

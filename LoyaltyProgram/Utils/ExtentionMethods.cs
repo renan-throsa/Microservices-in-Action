@@ -28,7 +28,9 @@ namespace LoyaltyProgram.Utils
             var clientSettingsSection = configuration.GetSection(nameof(ClientSettings));
             services.AddHttpClient<ISpecialOffersClient, SpecialOffersClient>((HttpClient client) =>
             {
-                string address = clientSettingsSection.Get<ClientSettings>().Route; client.BaseAddress = new Uri(address); client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+                string address = clientSettingsSection.Get<ClientSettings>().BaseAddress; 
+                client.BaseAddress = new Uri(address); 
+                client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
 
             }).AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(250 * Math.Pow(2, attempt))));
 

@@ -1,5 +1,4 @@
-﻿using ShoppingCart.Domain.Entites;
-using ShoppingCart.Domain.Interfaces;
+﻿using ShoppingCart.Domain.Interfaces;
 using ShoppingCart.Domain.Models;
 using System.Text.Json;
 
@@ -13,14 +12,14 @@ namespace ShoppingCart.Service
     public class ProductCatalogClient : IProductCatalogClient
     {
         private readonly HttpClient client;
-        private static string getProductPathTemplate = "/Product/GetMany?Id={0}";
+        private readonly string getProductPathTemplate = "/Product/GetMany?Id={0}";
 
         public ProductCatalogClient(HttpClient client)
         {
             this.client = client;
         }
 
-        public async Task<IEnumerable<CartItem>> GetShoppingCartItems(string[] productCatalogIds)
+        public async Task<IEnumerable<CartItemViewModel>> GetShoppingCartItems(IEnumerable<string> productCatalogIds)
         {
             var productsResource = string.Format(getProductPathTemplate, string.Join("&Id=", productCatalogIds));
             using var response = await client.GetAsync(productsResource);
@@ -34,7 +33,7 @@ namespace ShoppingCart.Service
                 PropertyNameCaseInsensitive = false
             };
 
-            return JsonSerializer.Deserialize<List<CartItem>>(result, option) ?? new();
+            return JsonSerializer.Deserialize<List<CartItemViewModel>>(result, option) ?? new();
         }      
 
         

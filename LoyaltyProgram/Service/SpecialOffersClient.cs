@@ -13,7 +13,7 @@ namespace LoyaltyProgram.Service
         {
             _client = client;
         }
-        
+
         /// <summary>
         /// Get today's offers
         /// </summary>
@@ -21,11 +21,11 @@ namespace LoyaltyProgram.Service
         public async Task<IEnumerable<SpecialOfferViewModel>> GetOffers()
         {
             using var response = await _client.GetAsync($"EventFeed");
-            
+
             return await ConvertToSpecialOffers(response);
         }
 
-        private static async Task<IEnumerable<SpecialOfferViewModel>> ConvertToSpecialOffers(HttpResponseMessage response)
+        private async Task<IEnumerable<SpecialOfferViewModel>> ConvertToSpecialOffers(HttpResponseMessage response)
         {
             response.EnsureSuccessStatusCode();
 
@@ -36,7 +36,7 @@ namespace LoyaltyProgram.Service
                 PropertyNameCaseInsensitive = false
             };
 
-            return JsonSerializer.Deserialize<List<SpecialOfferViewModel>>(result, option) ?? new();
+            return JsonSerializer.Deserialize<IEnumerable<SpecialOfferViewModel>>(result, option) ?? new List<SpecialOfferViewModel>();
 
         }
     }

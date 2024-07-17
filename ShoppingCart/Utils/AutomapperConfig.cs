@@ -14,7 +14,9 @@ namespace ShoppingCart.Utils
                .ForMember(cart => cart.UserId, x => x.MapFrom(y => y.UserId == null ? ObjectId.Empty : new ObjectId(y.UserId)))
                .ReverseMap();
 
-            CreateMap<CartItemViewModel, CartItem>().ReverseMap();
+            CreateMap<CartItemViewModel, CartItem>()
+                .ForMember(cartItem => cartItem.ProductCatalogueId, x => x.MapFrom(y => y.ProductCatalogueId == null ? ObjectId.Empty : new ObjectId(y.ProductCatalogueId)))
+                .ReverseMap();
         }
     }
 }

@@ -52,10 +52,9 @@ namespace SpecialOffers.Data
         private List<SpecialOffer> getList()
         {            
             return new List<SpecialOffer>{
-                new SpecialOffer(ObjectId.Empty,DateTime.Today, DateTime.Today.AddDays(1),"SpecialOfferCreated" ,"Best deal ever!!!",new HashSet<string>(){"669279420a7cde38d4d0b9df"},0.05f),
-                new SpecialOffer(ObjectId.Empty,DateTime.Today, DateTime.Today.AddDays(3), "SpecialOfferCreated", "Special offer - just for you",new HashSet<string>(){"669279420a7cde38d4d0b9e1"},0.05f),
-                new SpecialOffer(ObjectId.Empty,DateTime.Today, DateTime.Today.AddDays(3), "SpecialOfferCreated", "Nice deal",new HashSet<string>(){"669279420a7cde38d4d0b9e0"},0.10f),
-                new SpecialOffer(ObjectId.Empty,DateTime.Today.AddDays(-4), DateTime.Today.AddDays(-1), "SpecialOfferCreated", "Clean Week - Appliances deal",new HashSet<string>(){"669279420a7cde38d4d0b9ed"},0.10f)
+                new SpecialOffer(ObjectId.Empty,DateTime.Today, DateTime.Today.AddDays(1),"Cyper Week - Appliances deal" ,"Best deal ever over electronics!!!",new HashSet<string>(){"669279420a7cde38d4d0b9e0","669279420a7cde38d4d0b9e6","669279420a7cde38d4d0b9e9"},0.05f),
+                new SpecialOffer(ObjectId.Empty,DateTime.Today, DateTime.Today.AddDays(3), "Clean Week - Appliances deal", "Just for you ! Deals over home and kitchen appliances",new HashSet<string>(){"669279420a7cde38d4d0b9eb","669279420a7cde38d4d0b9ed"},0.05f),
+                new SpecialOffer(ObjectId.Empty,DateTime.Today.AddDays(-4), DateTime.Today.AddDays(-1), "Office Week", "Renew you office !",new HashSet<string>(){"669279420a7cde38d4d0b9e7","669279420a7cde38d4d0b9e3"},0.10f)
             };
 
         }

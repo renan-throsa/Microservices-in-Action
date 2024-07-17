@@ -8,8 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1 - Add services to the container.
 
-var clientSettingsSection = builder.Configuration.GetSection(nameof(ClientSettings));
-
 builder.Services.AddControllers(options => options.Filters.Add<LogAsyncResourceFilter>());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,6 +1,6 @@
 ﻿namespace ShoppingCart.Domain.Models
 {
-    public class CartViewModel
+    public record CartViewModel
     {
         public string Id { get; set; }
 
@@ -9,7 +9,6 @@
         private readonly HashSet<CartItemViewModel> items = new();
 
         public IEnumerable<CartItemViewModel> Items => items;
-
 
     }
 }

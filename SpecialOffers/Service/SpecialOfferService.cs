@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
 using SpecialOffers.Domain;
+using SpecialOffers.Domain.Entities;
 using SpecialOffers.Domain.Interfaces;
 using SpecialOffers.Domain.Models;
 using System.Linq.Expressions;
@@ -40,11 +41,21 @@ namespace SpecialOffers.Service
 
         public async Task<OperationResultModel> FindOffers(HashSet<string> productIds)
         {
-            var query = await _specialOfferRepository.FindOffers(productIds);
+            IEnumerable<SpecialOffer> query = await _specialOfferRepository.FindOffers(productIds);
 
             if (!query.Any()) return Response(HttpStatusCode.NoContent);
 
-            return Response(HttpStatusCode.OK, _mapper.Map<IEnumerable<SpecialOfferViewModel>>(query));
+            List<SpecialOffer> result = new();
+
+            foreach (var item in query)
+            {
+                if (item.ProductsIds.Intersect(productIds).Any())
+                {
+                    result.Add(item with { ProductsIds = new HashSet<string>(item.ProductsIds.Intersect(productIds)) });                    
+                }
+            }
+
+            return Response(HttpStatusCode.OK, _mapper.Map<IEnumerable<SpecialOfferViewModel>>(result));
 
             /*
             var query = _specialOfferRepository.GetQueryable().Where(so => so.DueDate < DateTime.Now);
@@ -67,7 +78,7 @@ namespace SpecialOffers.Service
             if (!query.Any()) return Response(HttpStatusCode.NoContent);
 
             return Response(HttpStatusCode.OK, _mapper.Map<IEnumerable<SpecialOfferViewModel>>(query));
-            
+
         }
 
         public async Task<OperationResultModel> FindSync(string Id)

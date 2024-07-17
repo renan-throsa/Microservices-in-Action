@@ -1,9 +1,9 @@
-﻿using ShoppingCart.Domain.Entites;
+﻿using ShoppingCart.Domain.Models;
 
 namespace ShoppingCart.Domain.Interfaces
 {
     public interface IProductCatalogClient
     {
-        public Task<IEnumerable<CartItem>> GetShoppingCartItems(string[] productCatalogIds);
+        public Task<IEnumerable<CartItemViewModel>> GetShoppingCartItems(IEnumerable<string> productCatalogIds);
     }
 }

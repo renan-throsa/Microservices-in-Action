@@ -66,7 +66,7 @@ namespace ShoppingCart.Service
             }
 
             _logger.LogWarning($"Removing products {string.Format("[{0}]", string.Join(",", model.ProductIds))} from user's cart with id {model.UserId}");            
-            shoppingCart.RemoveItems(model.ProductIds, _eventStore);
+            shoppingCart.RemoveItems(model.ProductIds);
 
             await _shoppingCartRepository.UpdateSync(shoppingCart);
             return Response(HttpStatusCode.OK, _mapper.Map<CartViewModel>(shoppingCart));
@@ -87,10 +87,10 @@ namespace ShoppingCart.Service
             var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
 
             IEnumerable<CartItem> shoppingCartItems;
-
+            var x = await shoppingCartItemsTask;
             try
             {
-                shoppingCartItems = await shoppingCartItemsTask;
+                shoppingCartItems = _mapper.Map<IEnumerable<CartItem>>(x); 
             }
             catch (Exception ex)
             {

@@ -1,17 +1,9 @@
-﻿namespace ShoppingCart.Domain.Entites
+﻿using MongoDB.Bson;
+using System.Text.Json.Serialization;
+
+namespace ShoppingCart.Domain.Entites
 {
-    public record CartItem(string ProductCatalogueId, string ProductName, string Description, Money Price)
-    {
-        public virtual bool Equals(CartItem? obj)
-        {
-            return obj != null && ProductCatalogueId.Equals(obj.ProductCatalogueId);
-        }
+    public record CartItem(ObjectId ProductCatalogueId, string ProductName, string Description, Money Price);
 
-        public override int GetHashCode()
-        {
-            return ProductCatalogueId.GetHashCode();
-        }
-    }
-
-    public record Money(string Currency, decimal Amount);
+    public record Money([property: JsonPropertyName("currency")] string Currency, [property: JsonPropertyName("amount")] decimal Amount);
 }

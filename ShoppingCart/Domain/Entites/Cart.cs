@@ -20,12 +20,12 @@ namespace ShoppingCart.Domain.Entites
         public async Task AddItems(IEnumerable<CartItem> shoppingCartItems, IEventRepository eventStore)
         {
             foreach (var item in shoppingCartItems)
-                if (Items.Add(item)) await eventStore.AddEvent("ShoppingCartItemAdded", UserId, new ObjectId(item.ProductCatalogueId));
+                if (Items.Add(item)) await eventStore.AddEvent("ShoppingCartItemAdded", UserId, item.ProductCatalogueId);
         }
 
-        public void RemoveItems(string[] productCatalogueIds, IEventRepository eventStore)
+        public void RemoveItems(IEnumerable<string> productCatalogueIds)
         {
-            Items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId));
+            Items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId.ToString()));
         }
     }
 
