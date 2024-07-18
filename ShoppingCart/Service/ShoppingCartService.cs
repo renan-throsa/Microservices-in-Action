@@ -82,7 +82,7 @@ namespace ShoppingCart.Service
             }
 
             _logger.LogInformation($"Adding products {string.Format("[{0}]", string.Join(",", model.ProductIds))} to user's cart with id {model.UserId}");
-            var shoppingCartItemsTask = _productCatalogClient.GetShoppingCartItems(model.ProductIds);
+            var shoppingCartItemsTask = _productCatalogClient.Query(model.ProductIds);
 
             var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
 

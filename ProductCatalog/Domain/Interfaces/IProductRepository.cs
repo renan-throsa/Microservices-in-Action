@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Driver.Linq;
 using ProductCatalog.Domain.Entities;
 using System.Linq.Expressions;
 

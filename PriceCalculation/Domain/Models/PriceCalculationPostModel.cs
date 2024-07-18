@@ -21,7 +21,12 @@ namespace PriceCalculation.Domain.Models
 
     }
 
-    public record CartItemViewModel([property: JsonPropertyName("id")]  string ProductCatalogueId, [property: JsonPropertyName("name")] string ProductName, [property: JsonPropertyName("description")] string Description, Money Price)
+    public record CartItemViewModel(
+        [property: JsonPropertyName("id")] string ProductCatalogueId,
+        [property: JsonPropertyName("quantity")] int Quantity,
+        [property: JsonPropertyName("name")] string ProductName,
+        [property: JsonPropertyName("description")] string Description,
+        Money Price)
     {
         public virtual bool Equals(CartItemViewModel? obj)
         {

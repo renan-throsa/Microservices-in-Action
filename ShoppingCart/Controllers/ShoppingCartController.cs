@@ -32,7 +32,7 @@ namespace ShoppingCart.Controllers
             return Customresult(result);
         }
 
-        [HttpDelete("items")]
+        [HttpPatch("items")]
         public async Task<ActionResult<CartViewModel>> Delete(CartPostModel model)
         {
             var result = await _shoppingCartService.DeleteAsync(model);

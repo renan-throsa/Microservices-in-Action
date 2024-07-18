@@ -22,15 +22,15 @@ namespace PriceCalculation.Services
 
             if (!offers.Any())
             {
-                totalPrice = model.Items.Sum(i => i.Price.Amount);
+                totalPrice = model.Items.Sum(i => i.Price.Amount * i.Quantity);
             }
             else
             {
 
-                foreach (var product in model.Items)
+                foreach (var item in model.Items)
                 {
-                    var o = GetOfferRelatedToProduct(offers, product.ProductCatalogueId);
-                    totalPrice += o is not null ? product.Price.Amount - (product.Price.Amount * o.discount) : product.Price.Amount;
+                    var o = GetOfferRelatedToProduct(offers, item.ProductCatalogueId);
+                    totalPrice += o is not null ? (item.Price.Amount - (item.Price.Amount * o.discount)) * item.Quantity : item.Price.Amount * item.Quantity;
                 }
             };
 

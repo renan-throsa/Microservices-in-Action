@@ -4,8 +4,6 @@ using PriceCalculation.Domain.Interfaces;
 using PriceCalculation.Domain.Models;
 using System.Net;
 
-
-
 namespace PriceCalculation.Controllers
 {
     [Route("api/[controller]")]

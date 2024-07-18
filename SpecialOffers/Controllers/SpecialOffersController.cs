@@ -19,7 +19,7 @@ namespace SpecialOffers.Controllers
         public async Task<ActionResult<SpecialOfferViewModel>> GetSpealcialOffers([FromQuery] HashSet<string> productId)
         {
             return CustomResponse(await _specialOfferService.FindOffers(productId));
-        }
+        }               
 
     }
 }

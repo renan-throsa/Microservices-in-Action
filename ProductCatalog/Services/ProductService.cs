@@ -22,7 +22,7 @@ namespace ProductCatalog.Services
 
         public OperationResultModel All()
         {            
-            return Response(HttpStatusCode.OK, _mapper.ProjectTo<IEnumerable<ProductViewModel>>(_repository.GetQueryable()));
+            return Response(HttpStatusCode.OK, _mapper.ProjectTo<ProductViewModel>(_repository.GetQueryable()));
         }
 
         public Task<OperationResultModel> FindAsync(Expression<Func<ProductViewModel, bool>> filter)

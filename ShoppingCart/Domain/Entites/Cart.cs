@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using ShoppingCart.Domain.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace ShoppingCart.Domain.Entites
 {
@@ -29,5 +30,8 @@ namespace ShoppingCart.Domain.Entites
         }
     }
 
+    public record CartItem(ObjectId ProductCatalogueId, int Quantity, string ProductName, string Description, Money Price);
+
+    public record Money([property: JsonPropertyName("currency")] string Currency, [property: JsonPropertyName("amount")] decimal Amount);
 
 }

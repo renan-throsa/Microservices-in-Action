@@ -1,7 +1,7 @@
-using PriceCalculation.Utils;
-using PriceCalculation.Filters;
+using ClientGateway.Utils;
+using ClientGateway.Filters;
 
-namespace PriceCalculation
+namespace ClientGateway
 {
     public class Program
     {
@@ -9,13 +9,10 @@ namespace PriceCalculation
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers(options => options.Filters.Add<LogAsyncResourceFilter>());
+            builder.Services.AddTypedClient(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddDependencies();
-            builder.Services.AddTypedClient(builder.Configuration);
 
             var app = builder.Build();
 
