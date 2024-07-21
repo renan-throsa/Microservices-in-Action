@@ -10,6 +10,7 @@ namespace ClientGateway.Domain.Models
         [property: JsonPropertyName("userId")]
         public string UserId { get; set; }
 
+        [property: JsonPropertyName("items")]
         public HashSet<CartItemViewModel> Items { get; set; } = new();
 
         public IEnumerable<string> ItemsIds => Items.Select(i => i.ProductCatalogueId);

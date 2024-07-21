@@ -30,7 +30,7 @@ namespace ClientGateway.Controllers
         }       
 
         // DELETE api/<CartController>/5
-        [HttpPatch("{id}")]
+        [HttpPatch]
         public async Task<CartViewModel> Delete(CartPostModel model)
         {
             return await _shopingCartClient.DeleteItems(model);

@@ -1,42 +1,42 @@
-using ProductCatalog.Filters;
 using ProductCatalog.Utils;
+using Serilog;
+using Serilog.Formatting.Json;
+var builder = WebApplication.CreateBuilder(args);
 
-namespace ProductCatalog
+// Add services to the container.
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddHealthCheckesConfig();
+builder.Services.AddDependencies(builder.Configuration);
+builder.Services.AddAutoMapper(typeof(AutomapperConfig));
+
+builder.Host.UseSerilog((context, logger) =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+    logger.Enrich.FromLogContext();
+    if (context.HostingEnvironment.IsDevelopment())
+        logger.WriteTo.Console();
+    else
+        logger.WriteTo.Console(new JsonFormatter());
+});
 
-            // Add services to the container.
+var app = builder.Build();
+app.AddDataToDB();
 
-            builder.Services.AddControllers(options=> options.Filters.Add<LogAsyncResourceFilter>());
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddHealthCheckesConfig();
-            builder.Services.AddDependencies(builder.Configuration);
-            builder.Services.AddAutoMapper(typeof(AutomapperConfig));
-
-            var app = builder.Build();
-            app.AddDataToDB();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-            app.UseHealthChecksConfig();
-
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.UseHealthChecksConfig();
+
+app.MapControllers();
+
+app.Run();

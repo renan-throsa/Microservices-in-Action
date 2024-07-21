@@ -97,7 +97,7 @@ namespace ProductCatalog.Data
         new Product
         (
 
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9df"),
             Name : "Smartphone",
             Code : "SPH-123",
             Description : "O mais recente smartphone com câmera de alta resolução.",
@@ -106,7 +106,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e0"),
             Name : "Notebook",
             Code : "NBK-456",
             Description : "Um notebook versátil com processador rápido e SSD.",
@@ -116,7 +116,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e1"),
             Name : "Fones de Ouvido",
             Code : "FNS-789",
             Description : "Cancelamento de ruído ativo e som de alta qualidade.",
@@ -125,7 +125,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e2"),
             Name : "Smart TV",
             Code : "TV-012",
             Description : "Tela OLED de 55 polegadas com suporte a HDR.",
@@ -135,7 +135,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e3"),
             Name : "Cafeteira",
             Code : "CFR-345",
             Description : "Prepare café expresso e café longo com facilidade.",
@@ -144,7 +144,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e4"),
             Name : "Console de Videogame",
             Code : "CNL-001",
             Description : "Console de última geração com gráficos em 4K.",
@@ -153,7 +153,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e5"),
             Name : "Câmera DSLR",
             Code : "CAM-234",
             Description : "Câmera profissional com sensor de 24MP e lentes intercambiáveis.",
@@ -162,7 +162,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e6"),
             Name : "Tablet",
             Code : "TBL-567",
             Description : "Tablet com tela de alta resolução e suporte a caneta digital.",
@@ -171,7 +171,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e7"),
             Name : "Impressora Multifuncional",
             Code : "IMP-890",
             Description : "Impressora colorida com scanner e copiadora integrados.",
@@ -180,7 +180,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e8"),
             Name : "Liquidificador",
             Code : "LQD-678",
             Description : "Liquidificador potente com diversas velocidades e função pulsar.",
@@ -188,7 +188,7 @@ namespace ProductCatalog.Data
             Available:true
         ),new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9e9"),
             Name : "Smartwatch",
             Code : "SWT-901",
             Description : "Smartwatch com monitor de frequência cardíaca e GPS integrado.",
@@ -197,7 +197,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9ea"),
             Name : "Auriculares sem fios",
             Code : "AUR-567",
             Description : "Auriculares sem fios com cancelamento de ruído ativo e som de alta fidelidade.",
@@ -206,7 +206,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9eb"),
             Name : "Aspirador Robotizado",
             Code : "ASP-234",
             Description : "Aspirador robotizado com mapeamento inteligente e função de limpeza a seco.",
@@ -215,7 +215,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9ec"),
             Name : "Teclado Mecânico para Gaming",
             Code : "KBD-789",
             Description : "Teclado mecânico RGB com switches Cherry MX e teclas programáveis.",
@@ -224,7 +224,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Empty,
+            Id : ObjectId.Parse("669279420a7cde38d4d0b9ed"),
             Name : "Máquina de Lavar Roupa",
             Code : "MLR-456",
             Description : "Máquina de lavar roupa com capacidade para 10kg e programas de lavagem variados.",

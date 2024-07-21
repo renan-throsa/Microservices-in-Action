@@ -1,5 +1,6 @@
 ﻿using ClientGateway.Domain.Interfaces;
 using ClientGateway.Domain.Models;
+using System.Text;
 using System.Text.Json;
 
 namespace ClientGateway.Clients
@@ -32,7 +33,7 @@ namespace ClientGateway.Clients
 
         public async Task<CartViewModel> DeleteItems(CartPostModel model)
         {
-            using StringContent jsonContent = new(JsonSerializer.Serialize(model));
+            using StringContent jsonContent = new(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
 
             using var response = await client.PutAsync(_CONTROLLER + "/items", jsonContent);
 

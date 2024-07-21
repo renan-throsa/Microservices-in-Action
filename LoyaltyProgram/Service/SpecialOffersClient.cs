@@ -29,6 +29,11 @@ namespace LoyaltyProgram.Service
         {
             response.EnsureSuccessStatusCode();
 
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                return new List<SpecialOfferViewModel>();
+            }
+
             var result = await response.Content.ReadAsStringAsync();
 
             var option = new JsonSerializerOptions
@@ -36,7 +41,7 @@ namespace LoyaltyProgram.Service
                 PropertyNameCaseInsensitive = false
             };
 
-            return JsonSerializer.Deserialize<IEnumerable<SpecialOfferViewModel>>(result, option) ?? new List<SpecialOfferViewModel>();
+            return JsonSerializer.Deserialize<IEnumerable<SpecialOfferViewModel>>(result, option);
 
         }
     }

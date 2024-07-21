@@ -1,0 +1,117 @@
+version: '3.8'
+
+volumes:  
+  nosql-data:
+
+networks:
+  app-net:
+    driver: bridge
+
+services: 
+  nosql:
+    image: mongodb/mongodb-community-server
+    container_name: docker-nosql  
+    restart: unless-stopped  
+    ports:
+      - "4001:27017"
+    volumes:
+      - nosql-data:/data/db
+    networks:
+      - app-net      
+
+  product-catalog:
+    image: product-catalog-api-img
+    container_name: product-catalog-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production    
+    restart: unless-stopped 
+    build:      
+      dockerfile: ./ProductCatalog/Dockerfile      
+    ports:
+      - "4002:80"
+    depends_on:
+      - nosql
+    networks:
+      - app-net
+    
+
+  shopping-cart:
+    image: shopping-cart-api-img
+    container_name: shopping-cart-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production    
+    restart: unless-stopped 
+    build:      
+      dockerfile: ./ShoppingCart/Dockerfile      
+    ports:
+      - "4003:80"
+    depends_on: 
+      - product-catalog
+    networks:
+      - app-net
+    
+
+  special-offers:
+    image: special-offers-api-img
+    container_name: special-offers-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production    
+    restart: unless-stopped 
+    build:      
+      dockerfile: ./SpecialOffers/Dockerfile      
+    ports:
+      - "4004:80"
+    depends_on: 
+      - nosql
+    networks:
+      - app-net
+    
+
+  loyalty-program:
+    image: loyalty-program-api-img
+    container_name: loyalty-program-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production    
+    restart: unless-stopped 
+    build:      
+      dockerfile: ./LoyaltyProgram/Dockerfile      
+    ports:
+      - "4005:80"
+    depends_on: 
+      - special-offers
+    networks:
+      - app-net
+    
+  
+  price-calculation:
+    image: price-calculation-api-img
+    container_name: price-calculation-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production    
+    restart: unless-stopped 
+    build:      
+      dockerfile: ./PriceCalculation/Dockerfile      
+    ports:
+      - "4006:80"
+    depends_on: 
+      - special-offers
+    networks:
+      - app-net
+    
+
+  api-gateway:
+    image: api-gateway-img
+    container_name: api-gateway
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production    
+    restart: unless-stopped 
+    build:      
+      dockerfile: ./ApiGateway/Dockerfile      
+    ports:
+      - "4007:80"
+    depends_on: 
+      - product-catalog
+      - shopping-cart
+      - price-calculation
+    networks:
+      - app-net  

@@ -29,7 +29,7 @@ namespace LoyaltyProgram.Service
 
             try
             {
-                resp = await _specialOffersClient.GetOffers();
+                resp = await _specialOffersClient.GetOffers();                
             }
             catch (Exception ex)
             {
@@ -37,8 +37,12 @@ namespace LoyaltyProgram.Service
                 return;
             }
 
-            await _repository.AddEvents(_mapper.Map<IEnumerable<SpecialOffer>>(resp));
-            _logger.LogInformation("Latest events updated");
+            if (resp.Any())
+            {
+                await _repository.AddEvents(_mapper.Map<IEnumerable<SpecialOffer>>(resp));
+                _logger.LogInformation("Latest events updated");
+            }
+           
         }
     }
 }
