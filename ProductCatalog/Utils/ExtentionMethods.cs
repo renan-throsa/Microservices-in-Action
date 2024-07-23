@@ -2,19 +2,32 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using ProductCatalog.Data;
 using ProductCatalog.Domain.Interfaces;
+using ProductCatalog.Queues;
 using ProductCatalog.Services;
 
 namespace ProductCatalog.Utils
 {
     public static class ExtentionMethods
     {
-        public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment Environment)
         {
             var DataBaseSettingsSection = configuration.GetSection(nameof(DataBaseSettings));
-            var dataBaseSettings = DataBaseSettingsSection.Get<DataBaseSettings>();
             services.Configure<DataBaseSettings>(DataBaseSettingsSection);
 
+            var QueueSettingsSection = configuration.GetSection(nameof(QueueSettings));
+            services.Configure<QueueSettings>(QueueSettingsSection);
+
             services.AddSingleton<ApplicationContext>();
+
+            if (Environment.IsDevelopment())
+            {
+                services.AddSingleton<IQueue, MockQueue>();
+            }
+            else
+            {
+                services.AddSingleton<IQueue, NatsQueue>();
+            }
+
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductService, ProductService>();
 

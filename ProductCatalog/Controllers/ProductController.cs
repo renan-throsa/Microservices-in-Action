@@ -37,14 +37,14 @@ namespace ProductCatalog.Controllers
         {
             var response = await _service.FindSync(ids);
             return CustomResponse(response);
-        }
-
-        // POST api/<ProductController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-
         }        
+
+        [HttpPatch]
+        public async Task<ActionResult<OperationResultModel>> Patch([FromBody] ProductPatchModel model)
+        {
+            var response = await _service.UpdateSync(model);
+            return CustomResponse(response);
+        }
 
         private ActionResult CustomResponse(OperationResultModel result)
         {

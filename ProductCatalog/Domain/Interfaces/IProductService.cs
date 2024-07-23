@@ -11,6 +11,7 @@ namespace ProductCatalog.Domain.Interfaces
         Task<OperationResultModel> FindSync(string Id);
         Task<OperationResultModel> FindSync(string[] Ids);
         Task<OperationResultModel> FindAsync(Expression<Func<ProductViewModel, bool>> filter);
+        Task<OperationResultModel> UpdateSync(ProductPatchModel model);
         OperationResultModel All();
     }
 }

@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthCheckesConfig();
-builder.Services.AddDependencies(builder.Configuration);
+builder.Services.AddDependencies(builder.Configuration, builder.Environment);
 builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
 builder.Host.UseSerilog((context, logger) =>

@@ -131,7 +131,14 @@ services:
     networks:
       - app-net
   
-  
+  message-queue:
+    container_name: nats-queue
+    image: nats
+    ports:
+      - "8222:8222"
+    networks:
+      - app-net
+
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.13
     container_name: kibana-api

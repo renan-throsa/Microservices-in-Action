@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
+using ProductCatalog.Domain.Entities;
 using ProductCatalog.Domain.Interfaces;
 using ProductCatalog.Domain.Models;
+using ProductCatalog.Queues;
 using System.Linq.Expressions;
 using System.Net;
 
@@ -12,16 +14,18 @@ namespace ProductCatalog.Services
         private readonly IProductRepository _repository;
         private readonly IMapper _mapper;
         private readonly ILogger<IProductService> _logger;
+        private readonly IQueue _queue;
 
-        public ProductService(IProductRepository repository, IMapper mapper, ILogger<IProductService> logger)
+        public ProductService(IProductRepository repository, IQueue queue, IMapper mapper, ILogger<IProductService> logger)
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
+            _queue = queue;
         }
 
         public OperationResultModel All()
-        {            
+        {
             return Response(HttpStatusCode.OK, _mapper.ProjectTo<ProductViewModel>(_repository.GetQueryable()));
         }
 
@@ -30,8 +34,9 @@ namespace ProductCatalog.Services
             throw new NotImplementedException();
         }
 
+
         public async Task<OperationResultModel> FindSync(ObjectId key)
-        {            
+        {
             var entity = await _repository.FindSync(key);
             if (entity == null)
             {
@@ -44,29 +49,19 @@ namespace ProductCatalog.Services
         }
 
         public async Task<OperationResultModel> FindSync(string Id)
-        {            
-            if (ObjectId.TryParse(Id, out var _))
+        {
+            var resolve = async delegate (Product entity)
             {
-                var entity = await _repository.FindSync(Id);
-                if (entity == null)
-                {
-                    var message = $"Key:{Id} was not found.";
-                    _logger.LogWarning(message);
-                    return Response(HttpStatusCode.NotFound, message);
-                }
-
                 return Response(HttpStatusCode.Found, _mapper.Map<ProductViewModel>(entity));
-            }
-            else
-            {
-                _logger.LogError($"Unable to parse the object: {Id}");
-                return Response(HttpStatusCode.BadRequest, $"Unable to parse the object: {Id}");
-            }
+            };
+
+            return await TryFindSync(Id, resolve);
+
         }
 
         public async Task<OperationResultModel> FindSync(string[] Ids)
         {
-            Ids = Ids.Distinct().ToArray();           
+            Ids = Ids.Distinct().ToArray();
             var result = new List<ProductViewModel>();
             foreach (var Id in Ids)
             {
@@ -87,6 +82,48 @@ namespace ProductCatalog.Services
             }
 
             return Response(HttpStatusCode.OK, result);
+
+        }
+
+        public async Task<OperationResultModel> UpdateSync(ProductPatchModel model)
+        {
+            var resolve = async delegate (Product entity)
+            {
+                if (entity.Price != model.Price)
+                {
+                    _queue.Publish(new PriceChangedEvent(new PriceChangeView(model.Id, entity.Price, model.Price)));
+                }
+
+                var toUpdate = entity with { Name = model.Name, Description = model.Description, Price = model.Price };
+
+                await _repository.UpdateAsync(toUpdate);
+
+                return Response(HttpStatusCode.OK, _mapper.Map<ProductViewModel>(toUpdate));
+            };
+
+            return await TryFindSync(model.Id, resolve);
+
+        }
+
+
+        private async Task<OperationResultModel> TryFindSync(string id, Func<Product, Task<OperationResultModel>> resolve)
+        {
+            if (ObjectId.TryParse(id, out var _))
+            {
+                var entity = await _repository.FindSync(id);
+                if (entity == null)
+                {
+                    var message = $"Key:{id} was not found.";
+                    _logger.LogWarning(message);
+                    return Response(HttpStatusCode.NotFound, message);
+                }
+                return await resolve(entity);
+            }
+            else
+            {
+                _logger.LogError($"Unable to parse the object: {id}");
+                return Response(HttpStatusCode.BadRequest, $"Unable to parse the object: {id}");
+            }
 
         }
 
