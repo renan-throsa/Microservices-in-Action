@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:  
   nosql-data:
+  esdata:
 
 networks:
   app-net:
@@ -17,7 +18,22 @@ services:
     volumes:
       - nosql-data:/data/db
     networks:
-      - app-net      
+      - app-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+    container_name: docker-esdata
+    ports:
+      - "9200:9200"
+    networks:
+      - app-net
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.monitoring.enabled=true
+      - xpack.watcher.enabled=false
+      - xpack.security.enabled=false      
 
   product-catalog:
     image: product-catalog-api-img
@@ -96,8 +112,7 @@ services:
     depends_on: 
       - special-offers
     networks:
-      - app-net
-    
+      - app-net    
 
   api-gateway:
     image: api-gateway-img
@@ -114,4 +129,15 @@ services:
       - shopping-cart
       - price-calculation
     networks:
-      - app-net  
+      - app-net
+  
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.13
+    container_name: kibana-api
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-net
