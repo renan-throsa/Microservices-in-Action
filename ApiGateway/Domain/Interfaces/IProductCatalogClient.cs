@@ -7,5 +7,7 @@ namespace ClientGateway.Domain.Interfaces
         Task<IEnumerable<ProductViewModel>> Query(IEnumerable<string> productCatalogIds);
         Task<ProductViewModel> Get(string productCatalogId);
         Task<IEnumerable<ProductViewModel>> Get();
+
+        Task<ProductViewModel> Update(ProductPatchModel model);
     }
 }

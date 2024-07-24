@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 
-namespace ShoppingCart.Domain.Entites
+namespace ShoppingCart.Domain.Entities
 {
     public abstract class Entity
     {

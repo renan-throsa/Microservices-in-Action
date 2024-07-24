@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
-using ShoppingCart.Domain.Entites;
+using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.Models;
 
 namespace ShoppingCart.Utils

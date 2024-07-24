@@ -18,7 +18,7 @@
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
 		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
-		<PackageReference Include="NATS.Client" Version="1.1.6" />
+		<PackageReference Include="NATS.Net" Version="2.3.2" />
 	</ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿using MongoDB.Bson;
-using ShoppingCart.Domain.Entites;
+using ShoppingCart.Domain.Entities;
 
 namespace ShoppingCart.Domain.Interfaces
 {

@@ -2,6 +2,6 @@
 {
     public interface IQueue
     {
-        public void Publish(Message message);
+        public Task Publish(string sub, string data);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using ShoppingCart.Domain.Entites;
+using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.Interfaces;
 
 namespace ShoppingCart.Data

@@ -57,6 +57,7 @@ namespace ProductCatalog.Utils
               {
                   Predicate = x => x.Tags.Contains("liveness")
               });
+
             app.UseHealthChecks("/health/startup",
               new HealthCheckOptions
               {

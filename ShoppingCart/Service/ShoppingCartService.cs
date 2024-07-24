@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
-using ShoppingCart.Domain.Entites;
+using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.Interfaces;
 using ShoppingCart.Domain.Models;
 using System.Net;
@@ -26,7 +26,7 @@ namespace ShoppingCart.Service
         }
 
         public async Task<OperationResultModel> FindSync(string userId)
-        {           
+        {
             if (ObjectId.TryParse(userId, out var _))
             {
                 var entity = await _shoppingCartRepository.FindSync(userId);
@@ -55,7 +55,7 @@ namespace ShoppingCart.Service
                 _logger.LogError($"Unable to parse the object: {model.UserId}");
                 return Response(HttpStatusCode.BadRequest, $"Unable to parse the object: {model.UserId}");
             }
-            
+
             var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
 
             if (shoppingCart == null)
@@ -65,7 +65,7 @@ namespace ShoppingCart.Service
                 return Response(HttpStatusCode.NotFound, message);
             }
 
-            _logger.LogWarning($"Removing products {string.Format("[{0}]", string.Join(",", model.ProductIds))} from user's cart with id {model.UserId}");            
+            _logger.LogWarning($"Removing products {string.Format("[{0}]", string.Join(",", model.ProductIds))} from user's cart with id {model.UserId}");
             shoppingCart.RemoveItems(model.ProductIds);
 
             await _shoppingCartRepository.UpdateSync(shoppingCart);
@@ -87,16 +87,15 @@ namespace ShoppingCart.Service
             var shoppingCart = await _shoppingCartRepository.FindSync(model.UserId);
 
             IEnumerable<CartItem> shoppingCartItems;
-            var x = await shoppingCartItemsTask;
             try
             {
-                shoppingCartItems = _mapper.Map<IEnumerable<CartItem>>(x); 
+                shoppingCartItems = _mapper.Map<IEnumerable<CartItem>>(await shoppingCartItemsTask);
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(ex.Message);
                 return Response(HttpStatusCode.InternalServerError, ex.Message);
-            }                     
+            }
 
             if (shoppingCart is null)
             {
@@ -124,6 +123,34 @@ namespace ShoppingCart.Service
                 Status = valide,
                 Content = result
             };
+        }
+
+        public async Task UpdatedAsync(string productId)
+        {
+            var id = new ObjectId(productId);
+
+            var productTask = _productCatalogClient.Find(productId);
+
+            var carts = _shoppingCartRepository.FindBy(productId);
+
+            if (!carts.Any())
+            {
+                _logger.LogWarning($"No carts to be updated");
+            }
+
+            var product = _mapper.Map<CartItem>(await productTask);
+
+            _logger.LogWarning($"Updating all carts item with {product.ProductCatalogueId} | {product.ProductName}");
+
+            foreach (var cart in carts)
+            {
+                var oldItem = cart.Items.First(i => i.ProductCatalogueId == id);
+                cart.Items.RemoveWhere(i => i.ProductCatalogueId == id);
+                cart.Items.Add(product with { Quantity = oldItem.Quantity });
+                await _shoppingCartRepository.UpdateSync(cart);
+            }
+
+            _logger.LogWarning($"Total of {carts.Count()} carts updated");
         }
     }
 }

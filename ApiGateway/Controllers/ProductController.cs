@@ -13,7 +13,7 @@ namespace ClientGateway.Controllers
         {
             _productCatalogClient = productCatalogClient;
         }
-        
+
         [HttpGet]
         public async Task<IEnumerable<ProductViewModel>> Get()
         {
@@ -26,6 +26,12 @@ namespace ClientGateway.Controllers
         {
             return await _productCatalogClient.Get(id);
         }
-        
+
+        [HttpPatch]
+        public async Task<ProductViewModel> Patch([FromBody] ProductPatchModel model)
+        {
+            return await _productCatalogClient.Update(model);
+        }
+
     }
 }

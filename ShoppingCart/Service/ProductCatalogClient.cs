@@ -38,6 +38,22 @@ namespace ShoppingCart.Service
             return JsonSerializer.Deserialize<List<CartItemViewModel>>(result, option) ?? new();
         }
 
+        public async Task<CartItemViewModel> Find(string productCatalogId)
+        {
+            using var response = await client.GetAsync(_CONTROLLER + "/" + productCatalogId);
+
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = false
+            };
+
+            return JsonSerializer.Deserialize<CartItemViewModel>(result, option);
+        }
+
 
 
     }

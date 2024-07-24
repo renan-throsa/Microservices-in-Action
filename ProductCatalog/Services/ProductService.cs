@@ -6,6 +6,7 @@ using ProductCatalog.Domain.Models;
 using ProductCatalog.Queues;
 using System.Linq.Expressions;
 using System.Net;
+using System.Text.Json;
 
 namespace ProductCatalog.Services
 {
@@ -89,14 +90,13 @@ namespace ProductCatalog.Services
         {
             var resolve = async delegate (Product entity)
             {
-                if (entity.Price != model.Price)
-                {
-                    _queue.Publish(new PriceChangedEvent(new PriceChangeView(model.Id, entity.Price, model.Price)));
-                }
-
                 var toUpdate = entity with { Name = model.Name, Description = model.Description, Price = model.Price };
 
                 await _repository.UpdateAsync(toUpdate);
+
+                var productChanged = new ProductChangedEvent(model.Id);
+                await _queue.Publish(productChanged.Subject, JsonSerializer.Serialize(productChanged));
+                _logger.LogInformation($"Change sent: {JsonSerializer.Serialize(productChanged)}");
 
                 return Response(HttpStatusCode.OK, _mapper.Map<ProductViewModel>(toUpdate));
             };

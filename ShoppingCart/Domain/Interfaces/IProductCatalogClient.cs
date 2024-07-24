@@ -4,6 +4,7 @@ namespace ShoppingCart.Domain.Interfaces
 {
     public interface IProductCatalogClient
     {
-        public Task<IEnumerable<CartItemViewModel>> Query(IEnumerable<string> productCatalogIds);
+        Task<IEnumerable<CartItemViewModel>> Query(IEnumerable<string> productCatalogIds);
+        Task<CartItemViewModel> Find(string productCatalogId);
     }
 }

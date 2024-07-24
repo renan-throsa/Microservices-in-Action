@@ -71,5 +71,23 @@ namespace ClientGateway.Clients
             return JsonSerializer.Deserialize<List<ProductViewModel>>(result, option) ?? new();
         }
 
+        public async Task<ProductViewModel> Update(ProductPatchModel model)
+        {
+
+            using StringContent jsonContent = new(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
+
+            using var response = await client.PatchAsync(_CONTROLLER, jsonContent);
+
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = false
+            };
+
+            return JsonSerializer.Deserialize<ProductViewModel>(result, option);
+        }
     }
 }

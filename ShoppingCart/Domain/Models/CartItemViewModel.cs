@@ -1,4 +1,4 @@
-﻿using ShoppingCart.Domain.Entites;
+﻿using ShoppingCart.Domain.Entities;
 using System.Text.Json.Serialization;
 
 namespace ShoppingCart.Domain.Models

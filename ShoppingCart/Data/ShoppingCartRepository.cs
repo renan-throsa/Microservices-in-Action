@@ -1,7 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using SharpCompress.Common;
-using ShoppingCart.Domain.Entites;
+using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.Interfaces;
 
 namespace ShoppingCart.Data
@@ -42,6 +41,14 @@ namespace ShoppingCart.Data
         public async Task<Cart> UpdateSync(Cart shoppingCart)
         {
             return await Collection.FindOneAndReplaceAsync(x => x.UserId == shoppingCart.UserId, shoppingCart);
+        }
+
+        public IEnumerable<Cart> FindBy(string productId)
+        {
+            return Collection
+                .AsQueryable()
+                .Where(x => x.Items.Select(i => i.ProductCatalogueId).Any(id => id == new ObjectId(productId)))
+                .AsEnumerable();
         }
 
         private IMongoCollection<Cart> GetOrCreateEntity(string entity)

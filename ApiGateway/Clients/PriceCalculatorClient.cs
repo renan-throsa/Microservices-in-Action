@@ -17,7 +17,7 @@ namespace ClientGateway.Clients
 
         public async Task<PriceCalculationViewModel> CarryOut(PriceCalculationPostModel model)
         {
-            using StringContent jsonContent = new(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
+            StringContent jsonContent = new(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
 
             using var response = await client.PostAsync(_CONTROLLER, jsonContent);
 

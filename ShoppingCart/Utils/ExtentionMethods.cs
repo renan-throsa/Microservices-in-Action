@@ -10,9 +10,11 @@ namespace ShoppingCart.Utils
     {
         public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            var DataBaseSettingsSection = configuration.GetSection(nameof(DataBaseSettings));
-            var dataBaseSettings = DataBaseSettingsSection.Get<DataBaseSettings>();
+            var DataBaseSettingsSection = configuration.GetSection(nameof(DataBaseSettings));            
             services.Configure<DataBaseSettings>(DataBaseSettingsSection);
+
+            var QueueSettingsSection = configuration.GetSection(nameof(QueueSettings));
+            services.Configure<QueueSettings>(QueueSettingsSection);
 
             services.AddTransient<IShoppingCartRepository, ShoppingCartRepository>();
             services.AddTransient<IEventRepository, EventRepository>();
@@ -35,16 +37,15 @@ namespace ShoppingCart.Utils
             }).AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(250 * Math.Pow(2, attempt))));
 
             return services;
-        }
+        }        
 
-
-        public static void AddDBData(this IHost webHost)
+        public static void AddDataToDB(this IHost webHost)
         {
             using (var scope = webHost.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<ApplicationContext>();
-
+                context.SeedDatabaseIfEmpty();
             }
         }
     }

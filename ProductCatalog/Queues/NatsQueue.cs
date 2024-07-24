@@ -1,21 +1,28 @@
 ﻿using Microsoft.Extensions.Options;
-using NATS.Client;
+using NATS.Client.Core;
 using ProductCatalog.Utils;
 
 namespace ProductCatalog.Queues
 {
-    public class NatsQueue : IQueue
+    public class NatsQueue : IQueue, IDisposable
     {
-        private readonly IConnection _connection;
+        private readonly NatsConnection _connection;
 
         public NatsQueue(IOptions<QueueSettings> options)
         {
-            _connection = new ConnectionFactory().CreateConnection(options.Value.Url);
+            NatsOpts opts = new() { Url = options.Value.Url };
+            _connection = new NatsConnection(opts);
         }
 
-        public void Publish(Message message)
+        public async Task Publish(string sub, string data)
         {
-            _connection.Publish(message.Subject, message.ToData());
+            await _connection.PublishAsync(sub, data);
         }
+
+        public void Dispose()
+        {
+            _connection.DisposeAsync();
+        }
+
     }
 }

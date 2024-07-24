@@ -7,5 +7,6 @@ namespace ShoppingCart.Domain.Interfaces
         Task<OperationResultModel> FindSync(string userId);
         Task<OperationResultModel> SaveAsync(CartPostModel model);
         Task<OperationResultModel> DeleteAsync(CartPostModel model);
+        Task UpdatedAsync(string productId);
     }
 }

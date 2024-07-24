@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 
-namespace ShoppingCart.Domain.Entites
+namespace ShoppingCart.Domain.Entities
 {
     public record Event(ObjectId Id, ObjectId UserId, ObjectId ProductCatalogueId, long SequenceNumber, DateTime OccuredAt, string Name);
 

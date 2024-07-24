@@ -2,7 +2,7 @@
 using ShoppingCart.Domain.Interfaces;
 using System.Text.Json.Serialization;
 
-namespace ShoppingCart.Domain.Entites
+namespace ShoppingCart.Domain.Entities
 {
     public class Cart
     {
@@ -11,6 +11,11 @@ namespace ShoppingCart.Domain.Entites
         public ObjectId UserId { get; set; }
 
         public HashSet<CartItem> Items { get; set; }
+
+        public Cart()
+        {            
+            Items = new HashSet<CartItem>();
+        }
 
         public Cart(ObjectId userId)
         {

@@ -2,9 +2,9 @@
 {
     public class MockQueue : IQueue
     {
-        public void Publish(Message message)
+        public Task Publish(string sub, string data)
         {
-            
+            return Task.CompletedTask;
         }
     }
 }

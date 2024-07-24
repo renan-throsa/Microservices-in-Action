@@ -1,6 +1,7 @@
 
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
+using ShoppingCart.Service;
 using ShoppingCart.Utils;
 using System.Reflection;
 
@@ -14,6 +15,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDependencies(builder.Configuration);
 builder.Services.AddTypedClient(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(AutomapperConfig));
+
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddHostedService<QueueHostedService>();
+}
 
 
 builder.Host.UseSerilog((context, logger) =>
@@ -30,7 +36,7 @@ builder.Host.UseSerilog((context, logger) =>
 
 
 var app = builder.Build();
-
+app.AddDataToDB();
 
 
 // Configure the HTTP request pipeline.

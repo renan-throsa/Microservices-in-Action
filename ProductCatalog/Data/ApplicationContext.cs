@@ -224,7 +224,7 @@ namespace ProductCatalog.Data
         ),
         new Product
         (
-            Id : ObjectId.Parse("669279420a7cde38d4d0b9ed"),
+            Id : ObjectId.Parse("66a13b855f3f242e5ba7372f"),
             Name : "Máquina de Lavar Roupa",
             Code : "MLR-456",
             Description : "Máquina de lavar roupa com capacidade para 10kg e programas de lavagem variados.",
