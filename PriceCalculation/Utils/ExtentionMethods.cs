@@ -11,7 +11,7 @@ namespace PriceCalculation.Utils
         public static IServiceCollection AddDependencies(this IServiceCollection services)
         {
 
-            services.AddTransient<IPriceCalculationService, PriceCalculationService>();
+            services.AddScoped<IPriceCalculationService, PriceCalculationService>();
 
             return services;
         }

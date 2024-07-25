@@ -16,11 +16,11 @@ namespace ShoppingCart.Utils
             var QueueSettingsSection = configuration.GetSection(nameof(QueueSettings));
             services.Configure<QueueSettings>(QueueSettingsSection);
 
-            services.AddTransient<IShoppingCartRepository, ShoppingCartRepository>();
-            services.AddTransient<IEventRepository, EventRepository>();
-            services.AddTransient<IShoppingCartRepository, ShoppingCartRepository>();
-            services.AddTransient<IShoppingCartService, ShoppingCartService>();
-            services.AddTransient<IEventService, EventService>();
+            services.AddSingleton<IShoppingCartRepository, ShoppingCartRepository>();
+            services.AddSingleton<IEventRepository, EventRepository>();
+            services.AddSingleton<IShoppingCartRepository, ShoppingCartRepository>();
+            services.AddSingleton<IShoppingCartService, ShoppingCartService>();
+            services.AddSingleton<IEventService, EventService>();
 
             services.AddSingleton<ApplicationContext>();
 

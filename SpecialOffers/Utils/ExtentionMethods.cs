@@ -13,8 +13,8 @@ namespace SpecialOffers.Utils
             services.Configure<DataBaseSettings>(DataBaseSettingsSection);
 
 
-            services.AddTransient<ISpecialOfferRepository, SpecialOfferRepository>();
-            services.AddTransient<ISpecialOfferService, SpecialOfferService>();
+            services.AddScoped<ISpecialOfferRepository, SpecialOfferRepository>();
+            services.AddScoped<ISpecialOfferService, SpecialOfferService>();
 
             services.AddSingleton<ApplicationContext>();
 

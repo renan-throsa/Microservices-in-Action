@@ -4,7 +4,7 @@ namespace PriceCalculation.Domain.Models
 {
     public record PriceCalculationPostModel
     {
-        [property: JsonPropertyName("id")]
+        [property: JsonPropertyName("cartId")]
         public string CartId { get; set; }
 
         [property: JsonPropertyName("userId")]
